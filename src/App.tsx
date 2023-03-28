@@ -7,8 +7,13 @@ const possibleColors = ["#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFFFF"];
 
 function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
+  const [layers, setLayers] = useState<Image[]>([]);
 
   function generateImagesFromLayers() {
+
+  }
+
+  function percentageOfColors() {
     
   }
 

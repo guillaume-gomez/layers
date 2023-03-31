@@ -28,7 +28,7 @@ function convertToGrayScale(context: CanvasRenderingContext2D, width: number, he
   context.putImageData(imageData, 0, 0);
 }
 
-function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number) {
+export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number) : HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
@@ -38,11 +38,10 @@ function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number,
 
   if(greyScaleContext && outputContext) {
     copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max);
+    return canvas;
   }
 
   throw new Error("Cannot find the greyScaleContext or outputContext");
-
-
 }
 
 function copyGreyCanvasByRange(
@@ -59,7 +58,7 @@ function copyGreyCanvasByRange(
   for (let i = 0; i < imageData.data.length; i += 4) {
     // as gray image, all components are the same
     const value = imageData.data[i];
-    if(min <= value && value >= max) {
+    if(min <= value && value > max) {
       imageDateOutput.data[i] = value;
       imageDateOutput.data[i + 1] = value;
       imageDateOutput.data[i + 2] = value;

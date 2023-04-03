@@ -28,7 +28,9 @@ function convertToGrayScale(context: CanvasRenderingContext2D, width: number, he
   context.putImageData(imageData, 0, 0);
 }
 
-export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number) : HTMLCanvasElement {
+type RGBArray = [number, number, number];
+
+export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number, color: RGBArray) : HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
@@ -37,7 +39,7 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: 
   const outputContext = canvas.getContext("2d");
 
   if(greyScaleContext && outputContext) {
-    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max);
+    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, color);
     return canvas;
   }
 
@@ -50,7 +52,8 @@ function copyGreyCanvasByRange(
   width: number,
   height: number,
   min: number,
-  max: number
+  max: number,
+  color: RGBArray
   ) {
   const imageData = greyScaleContext.getImageData(0, 0, width, height);
   const imageDateOutput = outputContext.getImageData(0, 0, width, height);
@@ -58,16 +61,16 @@ function copyGreyCanvasByRange(
   for (let i = 0; i < imageData.data.length; i += 4) {
     // as gray image, all components are the same
     const value = imageData.data[i];
-    if(min <= value && value > max) {
-      imageDateOutput.data[i] = value;
-      imageDateOutput.data[i + 1] = value;
-      imageDateOutput.data[i + 2] = value;
+    if(value >= min && value < max) {
+      imageDateOutput.data[i] = color[0];
+      imageDateOutput.data[i + 1] = color[1];
+      imageDateOutput.data[i + 2] = color[2];
       imageDateOutput.data[i + 3] = 255;
     } else {
       imageDateOutput.data[i] = 0;
       imageDateOutput.data[i + 1] = 0;
       imageDateOutput.data[i + 2] = 0;
-      imageDateOutput.data[i + 3] = 255;
+      imageDateOutput.data[i + 3] = 0;
     }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);

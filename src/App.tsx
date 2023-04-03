@@ -27,7 +27,7 @@ const testPalette : RGBArray[] =[
 function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(0);
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>([]);
-  const [layers, setLayers] = useState<HTMLCanvasElement[]>([]);
+  const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -36,7 +36,7 @@ function App() {
       return;
     }
 
-    const listOfCanvas : HTMLCanvasElement[] = layersSettings.map( ({min, max, color}, index) => {
+    const listOfCanvasBase64  = layersSettings.map( ({min, max, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
         min,
@@ -44,7 +44,7 @@ function App() {
         hexToRGB(color)
       );
     });
-    setLayers(listOfCanvas);
+    setLayersBase64(listOfCanvasBase64);
   }
 
   function percentageOfColors() {
@@ -143,8 +143,8 @@ function App() {
         </button>
         <div className="relative">
         {
-         layers.map( (layer, index) => 
-          <img className="absolute" key={index} src={layer.toDataURL()} />
+         layersBase64.map( (layerBase64, index) =>
+          <img className="absolute" key={index} src={layerBase64} />
          )
         }
         </div>

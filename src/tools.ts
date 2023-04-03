@@ -11,6 +11,11 @@ export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCan
 
 }
 
+
+
+
+// randomise depending of scale
+
 function convertToGrayScale(context: CanvasRenderingContext2D, width: number, height: number) {
   const imageData = context.getImageData(0, 0, width, height);
   for (let i = 0; i < imageData.data.length; i += 4) {
@@ -30,7 +35,7 @@ function convertToGrayScale(context: CanvasRenderingContext2D, width: number, he
 
 type RGBArray = [number, number, number];
 
-export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number, color: RGBArray) : HTMLCanvasElement {
+export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number, color: RGBArray) : string {
   const canvas = document.createElement("canvas");
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
@@ -40,7 +45,7 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: 
 
   if(greyScaleContext && outputContext) {
     copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, color);
-    return canvas;
+    return canvas.toDataURL();
   }
 
   throw new Error("Cannot find the greyScaleContext or outputContext");

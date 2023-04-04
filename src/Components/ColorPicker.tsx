@@ -1,30 +1,10 @@
 import React, { useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
+import { colorsPalette, findColorByName } from "./palette";
 
-const COLORS = [
-  "#000000",
-  "#914E72",
-  "#0078BF",
-  "#00A95C",
-  "#3255A4",
-  "#F15060",
-  "#3D5588",
-  "#765BA7",
-  "#00838A",
-  "#BB8B41",
-  "#407060",
-  "#FF665E",
-  "#925F52",
-  "#FFE800",
-  "#D2515E",
-  "#FF6C2F",
-  "#FF48B0",
-  "#88898A"
-];
+const COLORS = colorsPalette;
 
-//more colors https://www.stencil.wiki/colors
-
-const IN_BLACK :string[] = ["#FFE800", "#00A95C" ];
+const IN_BLACK :string[] = [findColorByName("yellow"), findColorByName("teal") ];
 
 interface ColorPickerInterface {
   label: string;
@@ -70,7 +50,7 @@ function ColorPicker({label, initialColorClass = COLORS[1], onChange} : ColorPic
           </div>
           {isOpen ?
             <ClickAwayListener onClickAway={handleClickAway}>
-            <div className="overflow-y-scroll h-36 border-2 border-gray-300 origin-top-right absolute right-0 top-full mt-2 rounded-md shadow-lg">
+            <div style={{ zIndex: 4 }} className="overflow-y-scroll h-36 border-2 border-gray-300 origin-top-right absolute right-0 top-full mt-2 rounded-md shadow-lg">
               <div className="rounded-md bg-base-200 shadow-xs p-2">
                 <div className="grid grid-flow-row-dense grid-cols-5">
                   {

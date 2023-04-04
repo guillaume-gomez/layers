@@ -1,21 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { times } from "lodash";
-import sample from './assets/sample.png';
+import sample from './assets/kiki.jpg';
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
+import { RGBArray, LayerSettingsData } from "./interfaces";
 
 
 import './App.css'
 
 const possibleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000"];
 
-type RGBArray = [number, number, number];
-interface LayerSettingsData {
-  min: number;
-  max: number;
-  color: string;
-}
+
+
+const testLayerSettings = [
+  {min: 0,  max: 70, alpha: 70, color:"#ff0059"},
+  {min: 68, max:187, alpha: 10, color: "#168D16"}
+]
 
 const testPalette : RGBArray[] =[
   [255,15,100],
@@ -25,8 +26,8 @@ const testPalette : RGBArray[] =[
 ]
 
 function App() {
-  const [numberOfLayers, setNumberOfLayer] = useState<number>(0);
-  const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>([]);
+  const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
+  const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,11 +37,12 @@ function App() {
       return;
     }
 
-    const listOfCanvasBase64  = layersSettings.map( ({min, max, color}, index) => {
+    const listOfCanvasBase64  = layersSettings.map( ({min, max, alpha, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
         min,
         max,
+        alpha,
         hexToRGB(color)
       );
     });
@@ -65,10 +67,10 @@ function App() {
     ];
   }
 
-  function updateLayerSettings(index: number, min: number, max: number, color: string) {
+  function updateLayerSettings(index: number, min: number, max: number, alpha: number, color: string) {
     const newLayerSettings : LayerSettingsData[] = layersSettings.map((layerSettings, indexLayerSettings) => {
       if(indexLayerSettings === index) {
-        return { min, max, color};
+        return { min, max, alpha, color};
       }
       return layerSettings;
     });
@@ -76,7 +78,7 @@ function App() {
   }
 
   function createLayerSettings() {
-    return { min: 0, max: 0, color: "#00FF00" };
+    return { min: 0, max: 0, alpha: 255, color: "#00FF00" };
   }
 
   function updateNumberOfLayer(numberOfLayer: number) {
@@ -114,15 +116,15 @@ function App() {
         layersSettings.map( (layerSettings, index) => (
           <LayerSettings
             layerSettings={layerSettings}
-            onChange={(min, max, color) => updateLayerSettings(index, min, max, color)}
+            onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
           />
           )
         )
       }
       </div>
       <div className="container">
-        <img ref={imageRef} src={sample} />
-        <canvas ref={canvasRef} />
+        <img ref={imageRef} src={sample}  className="hidden"/>
+        <canvas ref={canvasRef} className="hidden" />
         <button
           onClick={() => {
             if(canvasRef.current && imageRef.current) {

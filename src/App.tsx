@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { times } from "lodash";
-import sample from './assets/kiki.jpg';
+import sample from './assets/sample.png';
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
+import ColorPicker from "./Components/ColorPicker";
 import { RGBArray, LayerSettingsData } from "./interfaces";
 
 
@@ -29,8 +30,22 @@ function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
+  const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+
+  useEffect(() => {
+    if(imageRef.current) {
+      imageRef.current.onload = () => {
+        if(canvasRef.current) {
+          setLoadedImage(true);
+          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current)
+        }
+      }
+
+    }
+  }, [imageRef])
 
   function generateImagesFromLayers() {
     if(!canvasRef.current) {
@@ -102,11 +117,11 @@ function App() {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1>Bonjour</h1>
+      <ColorPicker label="my color" onChange={(color) => console.log(color)}/>
       <Slider
         label="Number of layer"
         onChange={(value) => updateNumberOfLayer(value)}
-        value={numberOfLayers
-        }
+        value={numberOfLayers}
         min={2}
         max={12}
       />
@@ -115,6 +130,7 @@ function App() {
       {
         layersSettings.map( (layerSettings, index) => (
           <LayerSettings
+            key={index}
             layerSettings={layerSettings}
             onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
           />
@@ -126,18 +142,9 @@ function App() {
         <img ref={imageRef} src={sample}  className="hidden"/>
         <canvas ref={canvasRef} className="hidden" />
         <button
+          disabled={!loadedImage}
           onClick={() => {
-            if(canvasRef.current && imageRef.current) {
-              imageToGrayScaleCanvas(imageRef.current, canvasRef.current)
-            }
-          }}
-          className="btn btn-primary"
-        >
-          Call me a white converter
-        </button>
-        <button
-          onClick={() => {
-            generateImagesFromLayers();
+           generateImagesFromLayers();
           }}
           className="btn btn-primary"
         >

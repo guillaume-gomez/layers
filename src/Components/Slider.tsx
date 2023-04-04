@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface SliderProps {
   onChange: (value: number) => void;
@@ -21,11 +21,34 @@ function Slider({
   float = false,
   step = 1
 } : SliderProps ) {
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+
+  function handleChange(e : any) {
+    const newValue = float ? parseFloat(e.target.value) : parseInt(e.target.value);
+    if(newValue < min) {
+      onChange(min);
+      return;
+    }
+
+    if(newValue > max) {
+      onChange(max);
+      return;
+    }
+
+    onChange(newValue);
+  }
+
   return (
     <div className="flex flex-col">
       <label className="flex flex-row items-center gap-2">
         {label}
-        <div className="badge badge-accent">{value}</div>
+        <div className="btn btn-primary btn-xs badge badge-accent">
+          {
+            isEdit ?
+              <input className="w-10" type="number" value={value} onBlur={() => setIsEdit(false)} onChange={handleChange}/> :
+              <span className="w-full" onClick={() => setIsEdit(true)}>{value}</span>
+          }
+        </div>
       </label>
       <input
           disabled={disabled}
@@ -34,10 +57,7 @@ function Slider({
           max={max}
           step={step}
           value={value}
-          onChange={(e) => {
-            const newValue = float ? parseFloat(e.target.value) : parseInt(e.target.value);
-            onChange(newValue);
-          }}
+          onChange={handleChange}
           className="range range-primary"
         />
     </div>

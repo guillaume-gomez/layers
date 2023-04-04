@@ -1,3 +1,5 @@
+import { RGBArray } from "./interfaces";
+
 export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCanvasElement) {
   canvas.width = image.width;
   canvas.height = image.height;
@@ -10,9 +12,6 @@ export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCan
   convertToGrayScale(context, image.width, image.height);
 
 }
-
-
-
 
 // randomise depending of scale
 
@@ -33,7 +32,6 @@ function convertToGrayScale(context: CanvasRenderingContext2D, width: number, he
   context.putImageData(imageData, 0, 0);
 }
 
-type RGBArray = [number, number, number];
 
 export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: number, max: number, alpha: number, color: RGBArray) : string {
   const canvas = document.createElement("canvas");
@@ -50,6 +48,35 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, min: 
 
   throw new Error("Cannot find the greyScaleContext or outputContext");
 }
+
+function averageArea(context: CanvasRenderingContext2D, areaWidth: number, x: number, y: number) : RGBArray {
+  const pixels = context.getImageData(x,y, areaWidth, areaWidth);
+  const { data } = pixels;
+  const numberOfPixels = areaWidth * areaWidth;
+  let red = 0;
+  let green = 0;
+  let blue = 0;
+
+
+  for (let i = 0; i < data.length; i += 4) {
+    red += data[i];
+    green += data[i + 1];
+    blue += data[i + 2];
+  }
+
+  return [(red/numberOfPixels), (green/numberOfPixels), (blue/numberOfPixels)];
+}
+
+function fillArea(outputContext: CanvasRenderingContext2D, areaWidth: number, x: number, y: number, choosenColor : RGBArray, alpha: number) {
+  const imageDateOutput = outputContext.getImageData(0, 0, areaWidth, areaWidth);
+  for (let i = 0; i < imageDateOutput.data.length; i += 4) {
+      imageDateOutput.data[i] = choosenColor[0];
+      imageDateOutput.data[i + 1] = choosenColor[1];
+      imageDateOutput.data[i + 2] = choosenColor[2];
+      imageDateOutput.data[i + 3] = alpha;
+  }
+}
+
 
 function copyGreyCanvasByRange(
   greyScaleContext: CanvasRenderingContext2D,
@@ -72,13 +99,12 @@ function copyGreyCanvasByRange(
       imageDateOutput.data[i + 1] = color[1];
       imageDateOutput.data[i + 2] = color[2];
       imageDateOutput.data[i + 3] = alpha;
-    }
-    /*} else {
+    } else {
       imageDateOutput.data[i] = 0;
       imageDateOutput.data[i + 1] = 0;
       imageDateOutput.data[i + 2] = 0;
       imageDateOutput.data[i + 3] = 0;
-    }*/
+    }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);
 }

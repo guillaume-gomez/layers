@@ -1,0 +1,1 @@
+La risographie crée des demie-teintes. Une opacité élevée dans le fichier source crée plus de points. À contrario, une opacité faible diminue le nombre de points et accentue l'effet tramé.

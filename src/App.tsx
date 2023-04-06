@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { times } from "lodash";
-import sample from './assets/sample.png';
+import sample from './assets/kiki.jpg';
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
-import ColorPicker from "./Components/ColorPicker";
 import { RGBArray, LayerSettingsData } from "./interfaces";
+import ThreeJsRendering from "./Components/ThreeJsRendering";
 
 
 import './App.css'
@@ -117,7 +117,6 @@ function App() {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1>Bonjour</h1>
-      <ColorPicker label="my color" onChange={(color) => console.log(color)}/>
       <Slider
         label="Number of layer"
         onChange={(value) => updateNumberOfLayer(value)}
@@ -157,7 +156,11 @@ function App() {
          )
         }
         </div>
+        <div className="p-50">
+          <ThreeJsRendering width={500} height={500} backgroundColor={0x101010} layers={layersBase64}/>
+        </div>
       </div>
+
     </div>
   )
 }

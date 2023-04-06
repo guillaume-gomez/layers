@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Slider from "./Slider";
+import ColorPicker from "./ColorPicker";
 import { LayerSettingsData } from "../interfaces";
 
 
@@ -45,7 +46,7 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
           min={0}
           max={255}
         />
-        <input type="color" onChange={(e) => handleChangeColor(e.target.value)} value={layerSettings.color} />
+        <ColorPicker label="Color" value={layerSettings.color} onChange={(color) => handleChangeColor(color)}/>
         <Slider
           label="Alpha"
           onChange={(value) => handleChangeAlpha(value)}

@@ -116,51 +116,55 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <h1>Bonjour</h1>
-      <Slider
-        label="Number of layer"
-        onChange={(value) => updateNumberOfLayer(value)}
-        value={numberOfLayers}
-        min={2}
-        max={12}
-      />
-
-      <div className="flex flex-col gap-3">
-      {
-        layersSettings.map( (layerSettings, index) => (
-          <LayerSettings
-            key={index}
-            layerSettings={layerSettings}
-            onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
+      <h1>Header</h1>
+      <div className="card bg-base-200 shadow-xl">
+        <div className="card-body">
+          <Slider
+            label="Number of layer"
+            onChange={(value) => updateNumberOfLayer(value)}
+            value={numberOfLayers}
+            min={2}
+            max={12}
           />
-          )
-        )
-      }
-      </div>
-      <div className="container">
-        <img ref={imageRef} src={sample}  className="hidden"/>
-        <canvas ref={canvasRef} className="hidden" />
-        <button
-          disabled={!loadedImage}
-          onClick={() => {
-           generateImagesFromLayers();
-          }}
-          className="btn btn-primary"
-        >
-          here is my number
-        </button>
-        <div className="relative">
-        {
-         layersBase64.map( (layerBase64, index) =>
-          <img className="absolute" key={index} src={layerBase64} />
-         )
-        }
-        </div>
-        <div className="p-50">
-          <ThreeJsRendering width={500} height={500} backgroundColor={0x101010} layers={layersBase64}/>
-        </div>
-      </div>
 
+          <div className="flex flex-col gap-3">
+          {
+            layersSettings.map( (layerSettings, index) => (
+              <LayerSettings
+                key={index}
+                layerSettings={layerSettings}
+                onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
+              />
+              )
+            )
+          }
+          </div>
+          <div className="container">
+            <img ref={imageRef} src={sample}  className="hidden"/>
+            <canvas ref={canvasRef} className="hidden" />
+            <button
+              disabled={!loadedImage}
+              onClick={() => {
+               generateImagesFromLayers();
+              }}
+              className="btn btn-primary"
+            >
+              here is my number
+            </button>
+            <div className="relative">
+            {
+             layersBase64.map( (layerBase64, index) =>
+              <img className="absolute" key={index} src={layerBase64} />
+             )
+            }
+            </div>
+            <div className="p-50">
+              <ThreeJsRendering width={500} height={500} backgroundColor={0x101010} layers={layersBase64}/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1>Footer</h1>
     </div>
   )
 }

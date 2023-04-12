@@ -5,8 +5,7 @@ export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCan
   canvas.height = image.height;
   const context = canvas.getContext('2d');
   if(!context) {
-    console.error("Cannot find context");
-    return;
+    throw new Error("Cannot find context");
   }
   context.drawImage(image, 0, 0);
   convertToGrayScale(context, image.width, image.height);
@@ -107,4 +106,38 @@ function copyGreyCanvasByRange(
     }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);
+}
+
+export async function mergeImages(layersBase64: string[], width: number, height: number, backgroundColor?: string) : Promise<string> {
+    let canvas = document.createElement("canvas");
+    if(!canvas) {
+      throw new Error("Cannot create a canvas");
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    let context = canvas.getContext("2d");
+    if(!context) {
+      throw new Error("Cannot create the context for the canvas");
+    }
+
+    if(backgroundColor) {
+      context.fillStyle = backgroundColor;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    const imagesPromises : Promise<HTMLImageElement>[] = layersBase64.map(layerBase64 => {
+      return new Promise((resolve) => {
+        let image = new Image();
+        image.src = layerBase64;
+        image.onload = () => {resolve(image)};
+      });
+    });
+
+    const images = await Promise.all(imagesPromises);
+    images.forEach(image => {
+      context!.drawImage(image, 0, 0, canvas.width, canvas.height);
+    });
+
+    return canvas.toDataURL(`image/png`);
 }

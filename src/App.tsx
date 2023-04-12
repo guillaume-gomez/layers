@@ -1,12 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { times } from "lodash";
-import sample from './assets/kiki.jpg';
-import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
+import { format as formatFns } from "date-fns";
+import { imageToGrayScaleCanvas, generateImageFromRange, mergeImages } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
+import RangeSlider from "./Components/RangeSlider";
 import { RGBArray, LayerSettingsData } from "./interfaces";
 import ThreeJsRendering from "./Components/ThreeJsRendering";
-
+import TwoDimensionRendering from "./Components/TwoDimensionRendering";
+import UploadButton from "./Components/UploadButton";
 
 import './App.css'
 
@@ -31,21 +33,21 @@ function App() {
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
+  const [is2D, setIs2D] = useState<boolean>(false);
+  const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const anchorRef = useRef<HTMLAnchorElement>(null);
 
-
-  useEffect(() => {
-    if(imageRef.current) {
-      imageRef.current.onload = () => {
-        if(canvasRef.current) {
+  function loadImage(file: File) {
+    if(imageRef.current && canvasRef.current) {
+      imageRef.current.src = URL.createObjectURL(file);
+      imageRef.current.onload =  (event: any) => {
           setLoadedImage(true);
-          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current)
-        }
-      }
-
+          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!)
+      };
     }
-  }, [imageRef])
+  }
 
   function generateImagesFromLayers() {
     if(!canvasRef.current) {
@@ -64,9 +66,16 @@ function App() {
     setLayersBase64(listOfCanvasBase64);
   }
 
-  function percentageOfColors() {
+  async function saveImage() {
+    setIsSavingImage(true)
+    if(imageRef.current && anchorRef.current) {
+      const dataURL = await mergeImages(layersBase64, imageRef.current.width, imageRef.current.height, "#0fff0f");
+      const dateString = formatFns(new Date(), "dd-MM-yyyy-hh-mm");
+      (anchorRef.current as any).download = `${dateString}-risography.png`;
+      anchorRef.current.href = dataURL.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+      setIsSavingImage(false)
+    }
   }
-
 
   function hexToRGB(hexColor: string) : RGBArray {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
@@ -119,6 +128,7 @@ function App() {
       <h1>Header</h1>
       <div className="card bg-base-200 shadow-xl">
         <div className="card-body">
+          <UploadButton onChange={loadImage} />
           <Slider
             label="Number of layer"
             onChange={(value) => updateNumberOfLayer(value)}
@@ -140,7 +150,7 @@ function App() {
           }
           </div>
           <div className="container">
-            <img ref={imageRef} src={sample}  className="hidden"/>
+            <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />
             <button
               disabled={!loadedImage}
@@ -151,16 +161,30 @@ function App() {
             >
               here is my number
             </button>
-            <div className="relative">
+                    <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">2D</span>
+            <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
+          </label>
+        </div>
             {
-             layersBase64.map( (layerBase64, index) =>
-              <img className="absolute" key={index} src={layerBase64} />
-             )
-            }
-            </div>
-            <div className="p-50">
-              <ThreeJsRendering width={500} height={500} backgroundColor={0x101010} layers={layersBase64}/>
-            </div>
+            is2D ?
+              <div className="flex flex-col gap-2">
+
+                <span> Mettre un load {isSavingImage.toString()}</span>
+                <a
+                  className="btn btn-accent"
+                  ref={anchorRef}
+                  onClick={saveImage}
+                >
+                    Save my fucking image
+                </a>
+                <TwoDimensionRendering layers={layersBase64} />
+              </div>
+              :
+              <ThreeJsRendering width={800} height={800} backgroundColor={0x1C1C1C} layers={layersBase64}/>
+
+          }
           </div>
         </div>
       </div>

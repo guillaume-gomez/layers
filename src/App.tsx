@@ -4,12 +4,13 @@ import { format as formatFns } from "date-fns";
 import { imageToGrayScaleCanvas, generateImageFromRange, mergeImages } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
-import RangeSlider from "./Components/RangeSlider";
+//import RangeSlider from "./Components/RangeSlider";
 import { RGBArray, LayerSettingsData } from "./interfaces";
 import ThreeJsRendering from "./Components/ThreeJsRendering";
-import TwoDimensionRendering from "./Components/TwoDimensionRendering";
-import UploadButton from "./Components/UploadButton";
-
+//import TwoDimensionRendering from "./Components/TwoDimensionRendering";
+//import UploadButton from "./Components/UploadButton";
+import sample from "./assets/kiki.jpg";
+import { sampleColor } from "./Components/palette";
 import './App.css'
 
 const possibleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000"];
@@ -102,7 +103,7 @@ function App() {
   }
 
   function createLayerSettings() {
-    return { min: 0, max: 0, alpha: 255, color: "#00FF00" };
+    return { min: 0, max: 0, alpha: 255, color: sampleColor() };
   }
 
   function updateNumberOfLayer(numberOfLayer: number) {
@@ -128,7 +129,7 @@ function App() {
       <h1>Header</h1>
       <div className="card bg-base-200 shadow-xl">
         <div className="card-body">
-          <UploadButton onChange={loadImage} />
+          {/*<UploadButton onChange={loadImage} />*/}
           <Slider
             label="Number of layer"
             onChange={(value) => updateNumberOfLayer(value)}
@@ -150,7 +151,7 @@ function App() {
           }
           </div>
           <div className="container">
-            <img ref={imageRef} className="hidden"/>
+            <img ref={imageRef} src={sample} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />
             <button
               disabled={!loadedImage}
@@ -179,7 +180,7 @@ function App() {
                 >
                     Save my fucking image
                 </a>
-                <TwoDimensionRendering layers={layersBase64} />
+                {/*<TwoDimensionRendering layers={layersBase64} />*/}
               </div>
               :
               <ThreeJsRendering width={800} height={800} backgroundColor={0x1C1C1C} layers={layersBase64}/>

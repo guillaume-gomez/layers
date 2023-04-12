@@ -1,3 +1,4 @@
+import { sample } from "lodash";
 
 interface paletteColor {
     name: string;
@@ -96,5 +97,15 @@ export function findColorByName(colorName: string) : string {
     return color.hex;
 }
 
+
 export const colorsPalette = palette.map(color => color.hex);
 //more colors https://www.stencil.wiki/colors
+
+export function sampleColor() : string {
+    const colorsPalette = palette.map(color => color.hex);
+    const chosenColor = sample(colorsPalette);
+    if(!chosenColor) {
+        return "#000000";
+    }
+    return chosenColor;
+}

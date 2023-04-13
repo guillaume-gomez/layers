@@ -7,8 +7,8 @@ import Slider from "./Components/Slider";
 //import RangeSlider from "./Components/RangeSlider";
 import { RGBArray, LayerSettingsData } from "./interfaces";
 import ThreeJsRendering from "./Components/ThreeJsRendering";
-//import TwoDimensionRendering from "./Components/TwoDimensionRendering";
-//import UploadButton from "./Components/UploadButton";
+import TwoDimensionRendering from "./Components/TwoDimensionRendering";
+import UploadButton from "./Components/UploadButton";
 import sample from "./assets/kiki.jpg";
 import { sampleColor } from "./Components/palette";
 import './App.css'
@@ -46,6 +46,7 @@ function App() {
       imageRef.current.onload =  (event: any) => {
           setLoadedImage(true);
           imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!)
+          debugger
       };
     }
   }
@@ -129,7 +130,7 @@ function App() {
       <h1>Header</h1>
       <div className="card bg-base-200 shadow-xl">
         <div className="card-body">
-          {/*<UploadButton onChange={loadImage} />*/}
+          <UploadButton onChange={loadImage} />
           <Slider
             label="Number of layer"
             onChange={(value) => updateNumberOfLayer(value)}
@@ -180,7 +181,7 @@ function App() {
                 >
                     Save my fucking image
                 </a>
-                {/*<TwoDimensionRendering layers={layersBase64} />*/}
+                <TwoDimensionRendering layers={layersBase64} height={canvasRef?.current?.height || 100} />
               </div>
               :
               <ThreeJsRendering width={800} height={800} backgroundColor={0x1C1C1C} layers={layersBase64}/>

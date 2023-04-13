@@ -4,13 +4,13 @@ import React from 'react';
 
 interface TwoDimensionRenderingProps {
     layers: string[];
-
+    height: number;
 }
 
-function TwoDimensionRendering({ layers }: TwoDimensionRenderingProps) {
+function TwoDimensionRendering({ layers, height }: TwoDimensionRenderingProps) {
     return (
-    <div>
-        <div className="relative">
+    <div style={{ height }}>
+        <div className="">
             {
              layers.map( (layerBase64, index) =>
               <img className="absolute" key={index} src={layerBase64} />

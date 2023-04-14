@@ -4,6 +4,7 @@ import { format as formatFns } from "date-fns";
 import { imageToGrayScaleCanvas, generateImageFromRange, mergeImages } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
+import ColorPicker from "./Components/ColorPicker";
 //import RangeSlider from "./Components/RangeSlider";
 import { RGBArray, LayerSettingsData } from "./interfaces";
 import ThreeJsRendering from "./Components/ThreeJsRendering";
@@ -33,6 +34,7 @@ function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
+  const [backgroundColor, setBackgroundColor] = useState<string>("#000000");
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
@@ -46,7 +48,6 @@ function App() {
       imageRef.current.onload =  (event: any) => {
           setLoadedImage(true);
           imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!)
-          debugger
       };
     }
   }
@@ -59,10 +60,12 @@ function App() {
     const listOfCanvasBase64  = layersSettings.map( ({min, max, alpha, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
-        min,
+        {min,
         max,
         alpha,
-        hexToRGB(color)
+        color: hexToRGB(color),
+        backgroundColor: hexToRGB(backgroundColor)
+        }
       );
     });
     setLayersBase64(listOfCanvasBase64);
@@ -138,6 +141,7 @@ function App() {
             min={2}
             max={12}
           />
+          <ColorPicker label="Color" value={backgroundColor} onChange={(color) => setBackgroundColor(color)}/>
 
           <div className="flex flex-col gap-3">
           {

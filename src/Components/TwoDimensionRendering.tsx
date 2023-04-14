@@ -10,7 +10,7 @@ interface TwoDimensionRenderingProps {
 function TwoDimensionRendering({ layers, height }: TwoDimensionRenderingProps) {
     return (
     <div style={{ height }}>
-        <div className="">
+        <div className="relative">
             {
              layers.map( (layerBase64, index) =>
               <img className="absolute" key={index} src={layerBase64} />

@@ -111,7 +111,7 @@ function copyGreyCanvasByRange(
       imageDateOutput.data[i] = backgroundColor[0];
       imageDateOutput.data[i + 1] = backgroundColor[1];
       imageDateOutput.data[i + 2] = backgroundColor[2];
-      imageDateOutput.data[i + 3] = 255;
+      imageDateOutput.data[i + 3] = alpha;
     }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);

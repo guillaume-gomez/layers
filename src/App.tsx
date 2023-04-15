@@ -7,11 +7,10 @@ import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
 //import RangeSlider from "./Components/RangeSlider";
 import { RGBArray, LayerSettingsData } from "./interfaces";
-import ThreeJsRendering from "./Components/ThreeJsRendering";
-import TwoDimensionRendering from "./Components/TwoDimensionRendering";
 import UploadButton from "./Components/UploadButton";
-import sample from "./assets/kiki.jpg";
 import { sampleColor } from "./Components/palette";
+import ThreeJSManager from "./Components/ThreeJSManager";
+import Canvas2DManager from "./Components/Canvas2DManager";
 import './App.css'
 
 const possibleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000"];
@@ -34,18 +33,16 @@ function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
-  const [backgroundColor, setBackgroundColor] = useState<string>("#000000");
-  const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#000000");
+  const [backgroundColorLayer, setBackgroundColorLayer] = useState<string>("#000000");
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
-  const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const anchorRef = useRef<HTMLAnchorElement>(null);
+
 
   useEffect(() => {
     generateImagesFromLayers();
-  },[numberOfLayers, layersSettings, backgroundColor]);
+  },[numberOfLayers, layersSettings, backgroundColorLayer, loadedImage]);
 
   function loadImage(file: File) {
     if(imageRef.current && canvasRef.current) {
@@ -61,7 +58,6 @@ function App() {
     if(!canvasRef.current) {
       return;
     }
-
     const listOfCanvasBase64  = layersSettings.map( ({min, max, alpha, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
@@ -69,22 +65,11 @@ function App() {
         max,
         alpha,
         color: hexToRGB(color),
-        backgroundColor: hexToRGB(backgroundColor)
+        backgroundColor: hexToRGB(backgroundColorLayer)
         }
       );
     });
     setLayersBase64(listOfCanvasBase64);
-  }
-
-  async function saveImage() {
-    setIsSavingImage(true)
-    if(imageRef.current && anchorRef.current) {
-      const dataURL = await mergeImages(layersBase64, imageRef.current.width, imageRef.current.height, "#0fff0f");
-      const dateString = formatFns(new Date(), "dd-MM-yyyy-hh-mm");
-      (anchorRef.current as any).download = `${dateString}-risography.png`;
-      anchorRef.current.href = dataURL.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-      setIsSavingImage(false)
-    }
   }
 
   function hexToRGB(hexColor: string) : RGBArray {
@@ -146,7 +131,7 @@ function App() {
             min={2}
             max={12}
           />
-          <ColorPicker label="Background color" value={backgroundColor} onChange={(color) => setBackgroundColor(color)}/>
+          <ColorPicker label="Background color layer" value={backgroundColorLayer} onChange={(color) => setBackgroundColorLayer(color)}/>
 
           <div className="flex flex-col gap-3">
           {
@@ -161,42 +146,27 @@ function App() {
           }
           </div>
           <div className="container">
-            <img ref={imageRef} src={sample} className="hidden"/>
+            <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />
-            <button
-              disabled={!loadedImage}
-              onClick={() => {
-               generateImagesFromLayers();
-              }}
-              className="btn btn-primary"
-            >
-              here is my number
-            </button>
-                    <div className="form-control">
-          <label className="label cursor-pointer">
-            <span className="label-text">2D</span>
-            <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
-          </label>
-        </div>
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <span className="label-text">2D</span>
+                <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
+              </label>
+            </div>
             {
             is2D ?
-              <div className="flex flex-col gap-2">
-
-                <span> Mettre un load {isSavingImage.toString()}</span>
-                <a
-                  className="btn btn-accent"
-                  ref={anchorRef}
-                  onClick={saveImage}
-                >
-                    Save my fucking image
-                </a>
-                <TwoDimensionRendering layers={layersBase64} height={canvasRef?.current?.height || 100} />
-              </div>
+                <Canvas2DManager
+                  layers={layersBase64}
+                  width={imageRef?.current?.width || 500}
+                  height={imageRef?.current?.height || 500}
+                />
               :
-              <div>
-                <ColorPicker label="Background color 3D" value={backgroundColor3D} onChange={(color) => setBackgroundColor3D(color)}/>
-                <ThreeJsRendering width={800} height={800} backgroundColor={backgroundColor3D} layers={layersBase64}/>
-              </div>
+                <ThreeJSManager
+                  layers={layersBase64}
+                  width={800}
+                  height={800}
+                />
           }
           </div>
         </div>

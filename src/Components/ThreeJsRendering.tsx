@@ -9,9 +9,10 @@ interface ThreejsRenderingProps {
   width: number;
   height: number;
   backgroundColor: string;
+  zOffset?: number
 }
 
-function ThreejsRendering({ layers, width, height, backgroundColor } : ThreejsRenderingProps) {
+function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.2 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
 
@@ -52,7 +53,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor } : ThreejsRe
               return <ThreeJsLayer
                         key={index}
                         base64Texture={layerBase64}
-                        meshProps={{position:[0,0, index  * 0.2]}}
+                        meshProps={{position:[0,0, index  * zOffset]}}
                      />
             })
           }

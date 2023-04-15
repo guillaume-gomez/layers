@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { times } from "lodash";
 import { format as formatFns } from "date-fns";
 import { imageToGrayScaleCanvas, generateImageFromRange, mergeImages } from "./tools";
@@ -35,12 +35,17 @@ function App() {
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const [backgroundColor, setBackgroundColor] = useState<string>("#000000");
+  const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#000000");
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
   const [isSavingImage, setIsSavingImage] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const anchorRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    generateImagesFromLayers();
+  },[numberOfLayers, layersSettings, backgroundColor]);
 
   function loadImage(file: File) {
     if(imageRef.current && canvasRef.current) {
@@ -141,7 +146,7 @@ function App() {
             min={2}
             max={12}
           />
-          <ColorPicker label="Color" value={backgroundColor} onChange={(color) => setBackgroundColor(color)}/>
+          <ColorPicker label="Background color" value={backgroundColor} onChange={(color) => setBackgroundColor(color)}/>
 
           <div className="flex flex-col gap-3">
           {
@@ -188,8 +193,10 @@ function App() {
                 <TwoDimensionRendering layers={layersBase64} height={canvasRef?.current?.height || 100} />
               </div>
               :
-              <ThreeJsRendering width={800} height={800} backgroundColor={0x1C1C1C} layers={layersBase64}/>
-
+              <div>
+                <ColorPicker label="Background color 3D" value={backgroundColor3D} onChange={(color) => setBackgroundColor3D(color)}/>
+                <ThreeJsRendering width={800} height={800} backgroundColor={backgroundColor3D} layers={layersBase64}/>
+              </div>
           }
           </div>
         </div>

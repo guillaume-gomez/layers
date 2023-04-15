@@ -8,7 +8,7 @@ interface ThreejsRenderingProps {
   layers: string[];
   width: number;
   height: number;
-  backgroundColor: number;
+  backgroundColor: string;
 }
 
 function ThreejsRendering({ layers, width, height, backgroundColor } : ThreejsRenderingProps) {
@@ -25,6 +25,10 @@ function ThreejsRendering({ layers, width, height, backgroundColor } : ThreejsRe
     );
   }
 
+  function colorToSigned24Bit(stringColor: string) : number {
+    return (parseInt(stringColor.substr(1), 16) << 8) / 256;
+  }
+
   return (
     <div className="flex flex-col gap-5 w-full">
       <Canvas
@@ -34,7 +38,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor } : ThreejsRe
         ref={canvasRef}
         style={{width, height}}
       >
-        <color attach="background" args={[backgroundColor]} />
+        <color attach="background" args={[colorToSigned24Bit(backgroundColor)]} />
         <OrbitControls makeDefault />
         <pointLight position={[10, 10, 10]} />
         <group

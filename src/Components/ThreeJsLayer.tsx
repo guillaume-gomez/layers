@@ -16,6 +16,7 @@ function ThreeJsLayer({meshProps, base64Texture }: ThreeJsStripeProps) {
     position: meshProps.position,
     config: { mass: 0.5, tension: 500, friction: 150, precision: 0.0001 }
   }))
+
   useEffect(() => {
     api.start({ to: {position: meshProps.position}})
   }, [meshProps, api])

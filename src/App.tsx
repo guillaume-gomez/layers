@@ -154,20 +154,25 @@ function App() {
                 <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
               </label>
             </div>
-            {
-            is2D ?
-                <Canvas2DManager
-                  layers={layersBase64}
-                  width={imageRef?.current?.width || 500}
-                  height={imageRef?.current?.height || 500}
-                />
-              :
-                <ThreeJSManager
-                  layers={layersBase64}
-                  width={800}
-                  height={800}
-                />
-          }
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body">
+                <div className="card-title">Result</div>
+                  {
+                  is2D ?
+                      <Canvas2DManager
+                        layers={layersBase64}
+                        width={imageRef?.current?.width || 500}
+                        height={imageRef?.current?.height || 500}
+                      />
+                    :
+                      <ThreeJSManager
+                        layers={layersBase64}
+                        width={800}
+                        height={800}
+                      />
+                }
+              </div>
+            </div>
           </div>
         </div>
       </div>

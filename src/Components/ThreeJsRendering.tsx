@@ -12,7 +12,7 @@ interface ThreejsRenderingProps {
   zOffset?: number
 }
 
-function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.2 } : ThreejsRenderingProps) {
+function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.1 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
 
@@ -29,6 +29,8 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
   function colorToSigned24Bit(stringColor: string) : number {
     return (parseInt(stringColor.substr(1), 16) << 8) / 256;
   }
+
+  console.log(zOffset);
 
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -53,7 +55,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
               return <ThreeJsLayer
                         key={index}
                         base64Texture={layerBase64}
-                        meshProps={{position:[0,0, index  * zOffset]}}
+                        meshProps={{position:[0 ,0, index  * zOffset]}}
                      />
             })
           }

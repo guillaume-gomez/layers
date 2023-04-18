@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
-import { colorsPalette, findColorByName } from "./palette";
+import { palette, findColorByName } from "./palette";
 
-const COLORS = colorsPalette;
+const COLORS = palette;
 
-const IN_BLACK :string[] = [findColorByName("yellow"), findColorByName("teal"), findColorByName("Mist") ];
+const IN_BLACK :string[] = [
+  findColorByName("white"),
+  findColorByName("yellow"),
+  findColorByName("teal"),
+  findColorByName("Mist"),
+  findColorByName("Fluorescent Yellow"),
+  findColorByName("Light Lime"),
+];
 
 interface ColorPickerInterface {
   label: string;
@@ -55,15 +62,15 @@ function ColorPicker({label, value, onChange} : ColorPickerInterface) {
           </div>
           {isOpen ?
             <ClickAwayListener onClickAway={handleClickAway}>
-            <div style={{ zIndex: 4 }} className="overflow-y-scroll h-36 border-2 border-gray-300 origin-top-right absolute right-0 top-full mt-2 rounded-md shadow-lg">
-              <div className="rounded-md bg-base-200 shadow-xs p-2">
+            <div style={{ zIndex: 4 }} className="overflow-y-scroll overflow-x-hidden h-36 border-2 border-gray-300 origin-top-right absolute right-0 top-full mt-2 rounded-md shadow-lg">
+              <div className="rounded-md bg-base-200 shadow-xs p-3">
                 <div className="grid grid-flow-row-dense grid-cols-5">
                   {
                     COLORS.map(color => 
                       (
                         <div
-                          style={{background: color}}
-                          onClick={()=> selectColor(color)}
+                          style={{background: color.hex}}
+                          onClick={()=> selectColor(color.hex)}
                           className={`cursor-pointer w-6 h-6 rounded-full mx-1 my-1`}>
                         </div>
                       )

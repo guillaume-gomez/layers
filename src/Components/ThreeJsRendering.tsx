@@ -16,6 +16,10 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
 
+  function colorToSigned24Bit(stringColor: string) : number {
+    return (parseInt(stringColor.substr(1), 16) << 8) / 256;
+  }
+
   // before layers are cut
   if(layers.length === 0) {
     return (
@@ -26,11 +30,8 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
     );
   }
 
-  function colorToSigned24Bit(stringColor: string) : number {
-    return (parseInt(stringColor.substr(1), 16) << 8) / 256;
-  }
-
-  console.log(zOffset);
+  const sizeOfLayersZ = layers.length * zOffset;
+  const middleSizeOfLayersZ = sizeOfLayersZ / 2;
 
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -47,7 +48,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
         <group
           position={[
             0
-            , 0,
+            ,0,
             0]}
         >
           {
@@ -55,7 +56,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
               return <ThreeJsLayer
                         key={index}
                         base64Texture={layerBase64}
-                        meshProps={{position:[0 ,0, index  * zOffset]}}
+                        meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}
                      />
             })
           }

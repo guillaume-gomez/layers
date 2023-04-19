@@ -11,21 +11,22 @@ interface ThreeJsStripeProps {
 
 
 function ThreeJsLayer({meshProps, base64Texture }: ThreeJsStripeProps) {
+  // bad example https://codesandbox.io/s/try-to-do-zgit5?file=/src/App.js:1254-1857
+  // to fix here is an example https://codesandbox.io/s/try-to-do-forked-gwy21?file=/src/App.js
   const [{ position }, api] = useSpring<any>(() =>({
-    from: meshProps.position,
+    from: {position: meshProps.position},
     position: meshProps.position,
     config: { mass: 0.5, tension: 500, friction: 150, precision: 0.0001 }
-  }))
+  }), [meshProps])
 
-  useEffect(() => {
-    api.start({ to: {position: meshProps.position}})
-  }, [meshProps, api])
- 
+
   const mesh = useRef<THREE.Mesh>(null!);
   //useFrame((state, delta) => (mesh.current.rotation.x += delta));
   const [texture] = useLoader(TextureLoader, [
     base64Texture
   ]);
+
+  console.log(position)
 
 
   if(!texture) {

@@ -56,7 +56,8 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
               return <ThreeJsLayer
                         key={index}
                         base64Texture={layerBase64}
-                        meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}
+                        position={[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}
+                        /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
                      />
             })
           }

@@ -17,9 +17,9 @@ const possibleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000"];
 
 
 
-const testLayerSettings = [
-  {min: 0,  max: 70, alpha: 70, color:"#ff0059"},
-  {min: 68, max:187, alpha: 10, color: "#168D16"}
+const defaultLayers = [
+  {min: 0,  max: 70, alpha: 125, color:"#ff0059"},
+  {min: 68, max:187, alpha: 90, color: "#168D16"}
 ]
 
 const testPalette : RGBArray[] =[
@@ -31,7 +31,7 @@ const testPalette : RGBArray[] =[
 
 function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
-  const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(testLayerSettings);
+  const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(defaultLayers);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const [backgroundColorLayer, setBackgroundColorLayer] = useState<string>("#000000");
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
@@ -97,7 +97,7 @@ function App() {
   }
 
   function createLayerSettings() {
-    return { min: 0, max: 0, alpha: 255, color: sampleColor() };
+    return { min: 0, max: Math.floor(Math.random() * 255), alpha: 255, color: sampleColor() };
   }
 
   function updateNumberOfLayer(numberOfLayer: number) {

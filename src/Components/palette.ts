@@ -7,6 +7,7 @@ interface paletteColor {
 
 export const palette : paletteColor[] = [
     { name: "black", hex:"#000000" },
+    { name: "white", hex: "#FFFFFF" },
     { name: "burgudy", hex:"#914E72" },
     { name: "blue", hex:"#0078BF" },
     { name: "green", hex:"#00A95C" },
@@ -26,7 +27,6 @@ export const palette : paletteColor[] = [
     { name: "light gray", hex:"#88898A" },
 
     { name: "Coral", hex: "#FF8E91" },
-    { name: "White", hex: "#FFFFFF" },
     { name: "Aqua", hex: "#5EC8E5" },
     { name: "Mint", hex: "#82D8D5" },
     { name: "Fluorescent Yellow", hex: "#F7FF00" },

@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import {DndContext} from '@dnd-kit/core';
+import {Droppable} from './Components/DND/Droppable';
+import {Draggable} from './Components/DND/Draggable';
+
 import { times } from "lodash";
-import { format as formatFns } from "date-fns";
-import { imageToGrayScaleCanvas, generateImageFromRange, mergeImages } from "./tools";
+import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
@@ -49,7 +52,10 @@ function App() {
       imageRef.current.src = URL.createObjectURL(file);
       imageRef.current.onload =  (event: any) => {
           setLoadedImage(true);
-          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!)
+          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!);
+          if(resultRef.current) {
+            resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
       };
     }
   }
@@ -154,7 +160,7 @@ function App() {
                 <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
               </label>
             </div>
-            <div className="card bg-base-100 shadow-xl">
+            <div ref={resultRef} className="card bg-base-100 shadow-xl">
               <div className="card-body">
                 <div className="card-title">Result</div>
                   {

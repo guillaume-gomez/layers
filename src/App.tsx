@@ -1,8 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import {DndContext} from '@dnd-kit/core';
-import {Droppable} from './Components/DND/Droppable';
-import {Draggable} from './Components/DND/Draggable';
-
 import { times } from "lodash";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
@@ -14,15 +10,24 @@ import UploadButton from "./Components/UploadButton";
 import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
 import Canvas2DManager from "./Components/Canvas2DManager";
+import { SortableList } from "./Components/DND/SortableList";
 import './App.css'
 
-const possibleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFFFF", "#000000"];
+function createRange<T>(
+  length: number,
+  initializer: (index: number) => T
+): T[] {
+  return [...new Array(length)].map((_, index) => initializer(index));
+}
 
 
+function getMockItems() {
+  return createRange(8, (index) => ({ id: index + 1 }));
+}
 
 const defaultLayers = [
-  {min: 0,  max: 70, alpha: 125, color:"#ff0059"},
-  {min: 68, max:187, alpha: 90, color: "#168D16"}
+  { id: "1", min: 0,  max: 70, alpha: 125, color:"#ff0059"},
+  { id: "2", min: 68, max:187, alpha: 90, color: "#168D16"}
 ]
 
 const testPalette : RGBArray[] =[
@@ -39,9 +44,11 @@ function App() {
   const [backgroundColorLayer, setBackgroundColorLayer] = useState<string>("#000000");
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
+  const [items, setItems] = useState(getMockItems);
+
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
+  const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     generateImagesFromLayers();
@@ -67,11 +74,12 @@ function App() {
     const listOfCanvasBase64  = layersSettings.map( ({min, max, alpha, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
-        {min,
-        max,
-        alpha,
-        color: hexToRGB(color),
-        backgroundColor: hexToRGB(backgroundColorLayer)
+        {
+          min,
+          max,
+          alpha,
+          color: hexToRGB(color),
+          backgroundColor: hexToRGB(backgroundColorLayer)
         }
       );
     });
@@ -95,7 +103,7 @@ function App() {
   function updateLayerSettings(index: number, min: number, max: number, alpha: number, color: string) {
     const newLayerSettings : LayerSettingsData[] = layersSettings.map((layerSettings, indexLayerSettings) => {
       if(indexLayerSettings === index) {
-        return { min, max, alpha, color};
+        return { id: indexLayerSettings.toString(), min, max, alpha, color};
       }
       return layerSettings;
     });
@@ -103,7 +111,7 @@ function App() {
   }
 
   function createLayerSettings() {
-    return { min: 0, max: Math.floor(Math.random() * 255), alpha: 255, color: sampleColor() };
+    return { id: (layersSettings.length + 1).toString(), min: 0, max: Math.floor(Math.random() * 255), alpha: 255, color: sampleColor() };
   }
 
   function updateNumberOfLayer(numberOfLayer: number) {
@@ -140,17 +148,29 @@ function App() {
           <ColorPicker label="Background color layer" value={backgroundColorLayer} onChange={(color) => setBackgroundColorLayer(color)}/>
 
           <div className="flex flex-col gap-3">
-          {
-            layersSettings.map( (layerSettings, index) => (
-              <LayerSettings
-                key={index}
-                layerSettings={layerSettings}
-                onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
-              />
+            {
+              layersSettings.map( (layerSettings, index) => (
+                  <LayerSettings
+                    key={index}
+                    layerSettings={layerSettings}
+                    onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
+                  />
+                )
               )
-            )
-          }
+            }
           </div>
+            <div style={{ maxWidth: 400, margin: "30px auto" }}>
+              <SortableList
+                items={layersSettings}
+                onChange={setLayersSettings}
+                renderItem={(item) => (
+                  <SortableList.Item id={item.id}>
+                    {item.id}
+                    <SortableList.DragHandle />
+                  </SortableList.Item>
+                )}
+              />
+            </div>
           <div className="container">
             <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />

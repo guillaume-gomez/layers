@@ -5,4 +5,5 @@ export interface LayerSettingsData {
   max: number;
   color: string;
   alpha: number;
+  id: string;
 }

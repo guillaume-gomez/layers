@@ -7,8 +7,6 @@ import type {
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import "./SortableItem.css";
-
 interface Props {
   id: UniqueIdentifier;
 }
@@ -51,8 +49,11 @@ export function SortableItem({ children, id }: PropsWithChildren<Props>) {
 
   return (
     <SortableItemContext.Provider value={context}>
-      <li className="SortableItem" ref={setNodeRef} style={style}>
+      <li className="flex flex-row gap-2 p-2 items-center card bg-base-100 shadow-xl" ref={setNodeRef} style={style}>
+        <span className="flex-1">
         {children}
+        </span>
+        <DragHandle />
       </li>
     </SortableItemContext.Provider>
   );
@@ -62,8 +63,8 @@ export function DragHandle() {
   const { attributes, listeners, ref } = useContext(SortableItemContext);
 
   return (
-    <button className="DragHandle" {...attributes} {...listeners} ref={ref}>
-      <svg viewBox="0 0 20 20" width="12">
+    <button className="btn btn-square btn-secondary focus-visible:shadow-md" {...attributes} {...listeners} ref={ref}>
+      <svg viewBox="0 0 20 20" width="24">
         <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z"></path>
       </svg>
     </button>

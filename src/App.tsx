@@ -30,13 +30,6 @@ const defaultLayers = [
   { id: "2", min: 68, max:187, alpha: 90, color: "#168D16"}
 ]
 
-const testPalette : RGBArray[] =[
-  [255,15,100],
-  [100,15,255],
-  [0,150,15],
-  [11,105,180]
-]
-
 function App() {
   const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(defaultLayers);
@@ -58,8 +51,8 @@ function App() {
     if(imageRef.current && canvasRef.current) {
       imageRef.current.src = URL.createObjectURL(file);
       imageRef.current.onload =  (event: any) => {
-          setLoadedImage(true);
           imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!);
+          setLoadedImage(true);
           if(resultRef.current) {
             resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
@@ -100,10 +93,10 @@ function App() {
     ];
   }
 
-  function updateLayerSettings(index: number, min: number, max: number, alpha: number, color: string) {
-    const newLayerSettings : LayerSettingsData[] = layersSettings.map((layerSettings, indexLayerSettings) => {
-      if(indexLayerSettings === index) {
-        return { id: indexLayerSettings.toString(), min, max, alpha, color};
+  function updateLayerSettings(id: string, min: number, max: number, alpha: number, color: string) {
+    const newLayerSettings : LayerSettingsData[] = layersSettings.map(layerSettings => {
+      if(layerSettings.id === id) {
+        return { id, min, max, alpha, color};
       }
       return layerSettings;
     });
@@ -149,28 +142,22 @@ function App() {
 
           <div className="flex flex-col gap-3">
             {
-              layersSettings.map( (layerSettings, index) => (
-                  <LayerSettings
-                    key={index}
-                    layerSettings={layerSettings}
-                    onChange={(min, max, alpha, color) => updateLayerSettings(index, min, max, alpha, color)}
-                  />
-                )
-              )
-            }
-          </div>
-            <div style={{ maxWidth: 400, margin: "30px auto" }}>
               <SortableList
                 items={layersSettings}
                 onChange={setLayersSettings}
                 renderItem={(item) => (
                   <SortableList.Item id={item.id}>
-                    {item.id}
-                    <SortableList.DragHandle />
+                    <LayerSettings
+                      key={item.id}
+                      layerSettings={item}
+                      onChange={(min, max, alpha, color) => updateLayerSettings(item.id, min, max, alpha, color)}
+                    />
                   </SortableList.Item>
                 )}
               />
-            </div>
+            }
+          </div>
+ 
           <div className="container">
             <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />

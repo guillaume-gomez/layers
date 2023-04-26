@@ -128,8 +128,8 @@ function App() {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1>Header</h1>
-      <div className="card bg-base-200 shadow-xl">
-        <div className="card-body">
+      <div className="container flex flex-row bg-base-200 p-2 gap-3">
+        <div className="settings flex flex-col gap-2">
           <UploadButton onChange={loadImage} />
           <Slider
             label="Number of layer"
@@ -157,34 +157,33 @@ function App() {
               />
             }
           </div>
- 
-          <div className="container">
-            <img ref={imageRef} className="hidden"/>
-            <canvas ref={canvasRef} className="hidden" />
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <span className="label-text">2D</span>
-                <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
-              </label>
-            </div>
-            <div ref={resultRef} className="card bg-base-100 shadow-xl">
-              <div className="card-body">
-                <div className="card-title">Result</div>
-                  {
-                  is2D ?
-                      <Canvas2DManager
-                        layers={layersBase64}
-                        width={imageRef?.current?.width || 500}
-                        height={imageRef?.current?.height || 500}
-                      />
-                    :
-                      <ThreeJSManager
-                        layers={layersBase64}
-                        width={800}
-                        height={800}
-                      />
-                }
-              </div>
+        </div>
+        <div className="render basis-10/12 flex flex-col gap-2">
+          <img ref={imageRef} className="hidden"/>
+          <canvas ref={canvasRef} className="hidden" />
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">2D</span>
+              <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
+            </label>
+          </div>
+          <div ref={resultRef} className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <div className="card-title">Result</div>
+                {
+                is2D ?
+                    <Canvas2DManager
+                      layers={layersBase64}
+                      width={imageRef?.current?.width || 500}
+                      height={imageRef?.current?.height || 500}
+                    />
+                  :
+                    <ThreeJSManager
+                      layers={layersBase64}
+                      width={800}
+                      height={800}
+                    />
+              }
             </div>
           </div>
         </div>

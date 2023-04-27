@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { times } from "lodash";
+import { useOnWindowResize } from "rooks";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
@@ -13,18 +14,6 @@ import Canvas2DManager from "./Components/Canvas2DManager";
 import { SortableList } from "./Components/DND/SortableList";
 import './App.css'
 
-function createRange<T>(
-  length: number,
-  initializer: (index: number) => T
-): T[] {
-  return [...new Array(length)].map((_, index) => initializer(index));
-}
-
-
-function getMockItems() {
-  return createRange(8, (index) => ({ id: index + 1 }));
-}
-
 const defaultLayers = [
   { id: "1", min: 0,  max: 70, alpha: 125, color:"#ff0059"},
   { id: "2", min: 68, max:187, alpha: 90, color: "#168D16"}
@@ -37,15 +26,36 @@ function App() {
   const [backgroundColorLayer, setBackgroundColorLayer] = useState<string>("#000000");
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
-  const [items, setItems] = useState(getMockItems);
+  const [width, setWidth] = useState<number>(380);
+  const [height, setHeight] = useState<number>(380 * 16/9);
 
+  const resultDivRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    limitSize();
+  }, [])
+
+  useOnWindowResize(() => {
+    console.log("fjkdj")
+    limitSize();
+  });
+
+  useEffect(() => {
     generateImagesFromLayers();
   },[numberOfLayers, layersSettings, backgroundColorLayer, loadedImage]);
+
+  function limitSize() {
+    const newWidth = (resultDivRef.current as any).clientWidth;
+    const newHeight = (resultDivRef.current as any).clientHeight;
+
+    const newPredefinedWidth = newWidth - 50;
+    setWidth(newPredefinedWidth);
+    setHeight(newPredefinedWidth * 9/16);
+
+  }
 
   function loadImage(file: File) {
     if(imageRef.current && canvasRef.current) {
@@ -128,60 +138,65 @@ function App() {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1>Header</h1>
-      <div className="container flex flex-row bg-base-200 p-2 gap-3">
-        <div className="settings flex flex-col gap-2">
-          <UploadButton onChange={loadImage} />
-          <Slider
-            label="Number of layer"
-            onChange={(value) => updateNumberOfLayer(value)}
-            value={numberOfLayers}
-            min={2}
-            max={12}
-          />
-          <ColorPicker label="Background color layer" value={backgroundColorLayer} onChange={(color) => setBackgroundColorLayer(color)}/>
-
-          <div className="flex flex-col gap-3">
-            {
-              <SortableList
-                items={layersSettings}
-                onChange={setLayersSettings}
-                renderItem={(item) => (
-                  <SortableList.Item id={item.id}>
-                    <LayerSettings
-                      key={item.id}
-                      layerSettings={item}
-                      onChange={(min, max, alpha, color) => updateLayerSettings(item.id, min, max, alpha, color)}
-                    />
-                  </SortableList.Item>
-                )}
-              />
-            }
+      <div className="container flex xl:flex-row flex-col bg-base-200 p-2 gap-3">
+        <div className="settings card bg-base-300">
+          <div className="card-body">
+            <div className="card-title">Settings</div>
+            <UploadButton onChange={loadImage} />
+            <Slider
+              label="Number of layer"
+              onChange={(value) => updateNumberOfLayer(value)}
+              value={numberOfLayers}
+              min={2}
+              max={12}
+            />
+            <ColorPicker label="Background color layer" value={backgroundColorLayer} onChange={(color) => setBackgroundColorLayer(color)}/>
+            <div className="card bg-accent">
+              <div className="card-title">LayerSettings</div>
+              <div className="flex flex-col gap-3">
+                {
+                  <SortableList
+                    items={layersSettings}
+                    onChange={setLayersSettings}
+                    renderItem={(item) => (
+                      <SortableList.Item id={item.id}>
+                        <LayerSettings
+                          key={item.id}
+                          layerSettings={item}
+                          onChange={(min, max, alpha, color) => updateLayerSettings(item.id, min, max, alpha, color)}
+                        />
+                      </SortableList.Item>
+                    )}
+                  />
+                }
+              </div>
+            </div>
           </div>
         </div>
-        <div className="render basis-10/12 flex flex-col gap-2">
-          <img ref={imageRef} className="hidden"/>
-          <canvas ref={canvasRef} className="hidden" />
-          <div className="form-control">
-            <label className="label cursor-pointer">
-              <span className="label-text">2D</span>
-              <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
-            </label>
-          </div>
-          <div ref={resultRef} className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <div className="card-title">Result</div>
-                {
+        <div className="render card bg-base-300 basis-10/12" ref={resultDivRef}>
+          <div className="card-body">
+            <div className="card-title">Renderer</div>
+            <img ref={imageRef} className="hidden"/>
+            <canvas ref={canvasRef} className="hidden" />
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <span className="label-text">2D</span>
+                <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
+              </label>
+            </div>
+            <div ref={resultRef}>
+              {
                 is2D ?
                     <Canvas2DManager
                       layers={layersBase64}
-                      width={imageRef?.current?.width || 500}
-                      height={imageRef?.current?.height || 500}
+                      width={imageRef?.current?.width || width}
+                      height={imageRef?.current?.height || height}
                     />
                   :
                     <ThreeJSManager
                       layers={layersBase64}
-                      width={800}
-                      height={800}
+                      width={width}
+                      height={height}
                     />
               }
             </div>

@@ -29,8 +29,7 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
 
   return (
   <div className="card bg-base-100 shadow-xl">
-    <div className="card-body">
-      <h2 className="card-title">Layer Settings</h2>
+    <div className="">
       <div className="flex flex-col gap-3">
         <Slider
           label="Min"

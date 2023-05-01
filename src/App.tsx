@@ -12,6 +12,7 @@ import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
 import Canvas2DManager from "./Components/Canvas2DManager";
 import { SortableList } from "./Components/DND/SortableList";
+import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
@@ -39,7 +40,6 @@ function App() {
   }, [])
 
   useOnWindowResize(() => {
-    console.log("fjkdj")
     limitSize();
   });
 
@@ -152,7 +152,11 @@ function App() {
             />
             <ColorPicker label="Background color layer" value={backgroundColorLayer} onChange={(color) => setBackgroundColorLayer(color)}/>
             <div className="card bg-accent">
-              <div className="card-title">LayerSettings</div>
+              <div className="card-title flex flex-row justify-between">
+
+                LayerSettings
+                <LayerSettingsInfo />
+              </div>
               <div className="flex flex-col gap-3">
                 {
                   <SortableList

@@ -1,9 +1,15 @@
 export type RGBArray = [number, number, number];
 
+export interface position2D {
+  x: number;
+  y: number
+}
+
 export interface LayerSettingsData {
+  id: string;
   min: number;
   max: number;
   color: string;
   alpha: number;
-  id: string;
+  position2D: position2D;
 }

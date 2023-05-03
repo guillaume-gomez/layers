@@ -5,7 +5,7 @@ import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
-//import RangeSlider from "./Components/RangeSlider";
+import RangeSlider from "./Components/RangeSlider";
 import { RGBArray, LayerSettingsData } from "./interfaces";
 import UploadButton from "./Components/UploadButton";
 import { sampleColor } from "./Components/palette";
@@ -16,8 +16,8 @@ import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
-  { id: "1", min: 0,  max: 70, alpha: 125, color:"#ff0059"},
-  { id: "2", min: 68, max:187, alpha: 90, color: "#168D16"}
+  { id: "1", min: 0,  max: 70, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
+  { id: "2", min: 68, max:187, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
 ]
 
 function App() {
@@ -82,7 +82,7 @@ function App() {
           max,
           alpha,
           color: hexToRGB(color),
-          backgroundColor: hexToRGB(backgroundColorLayer)
+          backgroundColor: hexToRGB(backgroundColorLayer),
         }
       );
     });
@@ -103,18 +103,25 @@ function App() {
     ];
   }
 
-  function updateLayerSettings(id: string, min: number, max: number, alpha: number, color: string) {
-    const newLayerSettings : LayerSettingsData[] = layersSettings.map(layerSettings => {
-      if(layerSettings.id === id) {
-        return { id, min, max, alpha, color};
+  function updateLayerSettings(newLayerSettings : LayerSettingsData) {
+    const newLayersSettings : LayerSettingsData[] = layersSettings.map(layerSettings => {
+      if(layerSettings.id === newLayerSettings.id) {
+        return newLayerSettings;
       }
       return layerSettings;
     });
-    setLayersSettings(newLayerSettings);
+    setLayersSettings(newLayersSettings);
   }
 
   function createLayerSettings() {
-    return { id: (layersSettings.length + 1).toString(), min: 0, max: Math.floor(Math.random() * 255), alpha: 255, color: sampleColor() };
+    return {
+      id: (layersSettings.length + 1).toString(),
+      min: 0,
+      max: Math.floor(Math.random() * 255),
+      alpha: 255,
+      color: sampleColor(),
+      position2D: { x:0, y: 0 }
+    };
   }
 
   function updateNumberOfLayer(numberOfLayer: number) {
@@ -142,6 +149,7 @@ function App() {
         <div className="settings card bg-base-300">
           <div className="card-body">
             <div className="card-title">Settings</div>
+            <RangeSlider min={1} max={10000}/>
             <UploadButton onChange={loadImage} />
             <Slider
               label="Number of layer"
@@ -167,7 +175,7 @@ function App() {
                         <LayerSettings
                           key={item.id}
                           layerSettings={item}
-                          onChange={(min, max, alpha, color) => updateLayerSettings(item.id, min, max, alpha, color)}
+                          onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
                         />
                       </SortableList.Item>
                     )}

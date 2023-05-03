@@ -9,7 +9,6 @@ export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCan
   }
   context.drawImage(image, 0, 0);
   convertToGrayScale(context, image.width, image.height);
-
 }
 
 // randomise depending of scale

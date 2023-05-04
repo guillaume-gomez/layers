@@ -3,16 +3,18 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
+import { position2D } from "../interfaces";
 
 interface ThreejsRenderingProps {
   layers: string[];
+  positions2d: position2D[];
   width: number;
   height: number;
   backgroundColor: string;
   zOffset?: number
 }
 
-function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.1 } : ThreejsRenderingProps) {
+function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zOffset = 0.1 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
 
@@ -56,7 +58,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor, zOffset = 0.
               return <ThreeJsLayer
                         key={index}
                         base64Texture={layerBase64}
-                        position={[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}
+                        position={[positions2d[index].x , positions2d[index].y, -middleSizeOfLayersZ + (index  * zOffset)]}
                         /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
                      />
             })

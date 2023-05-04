@@ -12,7 +12,7 @@ import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
 import Canvas2DManager from "./Components/Canvas2DManager";
 import { SortableList } from "./Components/DND/SortableList";
-import LayerSettingsInfo from "./Components/LayerSettingsInfo";
+//import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
@@ -163,7 +163,7 @@ function App() {
               <div className="card-title flex flex-row justify-between">
 
                 LayerSettings
-                <LayerSettingsInfo />
+                {/*<LayerSettingsInfo />*/}
               </div>
               <div className="flex flex-col gap-3">
                 {
@@ -207,6 +207,7 @@ function App() {
                   :
                     <ThreeJSManager
                       layers={layersBase64}
+                      positions2d={layersSettings.map(layerSetting => layerSetting.position2D)}
                       width={width}
                       height={height}
                     />

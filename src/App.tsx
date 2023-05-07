@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { times } from "lodash";
 import { useOnWindowResize } from "rooks";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
-import LayerSettings from "./Components/LayerSettings";
 import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
 import RangeSlider from "./Components/RangeSlider";
@@ -11,7 +10,7 @@ import UploadButton from "./Components/UploadButton";
 import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
 import Canvas2DManager from "./Components/Canvas2DManager";
-import { SortableList } from "./Components/DND/SortableList";
+import LayerSettingsManager from "./Components/LayerSettingsManager";
 //import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
@@ -165,23 +164,7 @@ function App() {
                 LayerSettings
                 {/*<LayerSettingsInfo />*/}
               </div>
-              <div className="flex flex-col gap-3">
-                {
-                  <SortableList
-                    items={layersSettings}
-                    onChange={setLayersSettings}
-                    renderItem={(item) => (
-                      <SortableList.Item id={item.id}>
-                        <LayerSettings
-                          key={item.id}
-                          layerSettings={item}
-                          onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
-                        />
-                      </SortableList.Item>
-                    )}
-                  />
-                }
-              </div>
+              <LayerSettingsManager onChangeLayerSettings={setLayersSettings} layersSettings={layersSettings} updateLayerSettings={updateLayerSettings} />
             </div>
           </div>
         </div>

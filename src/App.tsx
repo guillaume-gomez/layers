@@ -10,8 +10,9 @@ import UploadButton from "./Components/UploadButton";
 import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
 import Canvas2DManager from "./Components/Canvas2DManager";
+import CollapsibleCard from "./Components/CollapsibleCard";
 import LayerSettingsManager from "./Components/LayerSettingsManager";
-//import LayerSettingsInfo from "./Components/LayerSettingsInfo";
+import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
@@ -144,32 +145,48 @@ function App() {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1>Header</h1>
-      <div className="container flex xl:flex-row flex-col bg-base-200 p-2 gap-3">
+      <div className="w-4/5 hidden">
+        <RangeSlider min={1} max={10000}/>
+      </div>
+      <div className="container flex xl:flex-row flex-col bg-base-200 gap-3">
         <div className="settings card bg-base-300">
-          <div className="card-body">
+          <div className="card-body p-2">
             <div className="card-title">Settings</div>
-            <RangeSlider min={1} max={10000}/>
-            <UploadButton onChange={loadImage} />
-            <Slider
-              label="Number of layer"
-              onChange={(value) => updateNumberOfLayer(value)}
-              value={numberOfLayers}
-              min={2}
-              max={12}
-            />
-            <ColorPicker label="Background color layer" value={backgroundColorLayer} onChange={(color) => setBackgroundColorLayer(color)}/>
-            <div className="card bg-accent">
-              <div className="card-title flex flex-row justify-between">
-
-                LayerSettings
-                {/*<LayerSettingsInfo />*/}
+            <CollapsibleCard header="General Settings" forceCollapsible={true}>
+              <UploadButton onChange={loadImage} />
+              <ColorPicker
+                label="Background color layer"
+                value={backgroundColorLayer}
+                onChange={(color) => setBackgroundColorLayer(color)}
+              />
+            </CollapsibleCard>
+            <CollapsibleCard
+              header={
+                <div className="flex items-center gap-2">
+                  <span>Layers settings</span>
+                  <LayerSettingsInfo />
+                </div>
+              }
+            >
+              <Slider
+                label="Number of layer"
+                onChange={(value) => updateNumberOfLayer(value)}
+                value={numberOfLayers}
+                min={2}
+                max={12}
+              />
+              <div className="flex flex-col gap-2 bg-accent py-2 px-1">
+                <LayerSettingsManager
+                  onChangeLayerSettings={setLayersSettings}
+                  layersSettings={layersSettings}
+                  updateLayerSettings={updateLayerSettings}
+                />
               </div>
-              <LayerSettingsManager onChangeLayerSettings={setLayersSettings} layersSettings={layersSettings} updateLayerSettings={updateLayerSettings} />
-            </div>
+            </CollapsibleCard>
           </div>
         </div>
         <div className="render card bg-base-300 basis-10/12" ref={resultDivRef}>
-          <div className="card-body">
+          <div className="card-body p-2">
             <div className="card-title">Renderer</div>
             <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 
 interface CollapsibleCardProps {
-  onClick?: () => void;
-  forceCollapsible?: boolean;
+  toggle?: () => void;
+  collapse?: boolean;
   header: React.ReactNode;
   children: React.ReactNode
 }
 
-function CollapsibleCard({ onClick, header, forceCollapsible = false, children } : CollapsibleCardProps): React.ReactElement {
+function CollapsibleCard({  toggle, collapse = false, header, children } : CollapsibleCardProps): React.ReactElement {
 
-  if(forceCollapsible) {
+  if(collapse) {
     return (
-      <div className="card border border-base-300 bg-base-100 rounded-box">
+      <div className="card border border-base-300 bg-base-100 rounded-box" onClick={toggle}>
         <div className="card-body p-2">
           <div className="card-title text-xl font-medium">
             {header}

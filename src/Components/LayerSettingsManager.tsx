@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import reverse from "lodash";
 import { SortableList } from "./DND/SortableList";
 import LayerSettings from "./LayerSettings";
 import { LayerSettingsData } from "../interfaces";
+import CollapsibleCard from "./CollapsibleCard";
 
 interface LayerSettingsManagerProps {
   layersSettings: LayerSettingsData[];
@@ -10,7 +12,6 @@ interface LayerSettingsManagerProps {
 }
 
 function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLayerSettings } : LayerSettingsManagerProps) {
-  const [idLayerSettingsOpen, setIdLayerSettingsOpen] = useState<string>(layersSettings[0].id);
   return(
     <div className="flex flex-col gap-3">
       {
@@ -21,8 +22,6 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
             <SortableList.Item id={item.id}>
               <LayerSettings
                 key={item.id}
-                open={idLayerSettingsOpen === item.id}
-                toggle={() => setIdLayerSettingsOpen(item.id) }
                 layerSettings={item}
                 onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
               />

@@ -11,6 +11,7 @@ import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
 import Canvas2DManager from "./Components/Canvas2DManager";
 import CollapsibleCard from "./Components/CollapsibleCard";
+import CollapsibleCardManager from "./Components/CollapsibleCardManager";
 import LayerSettingsManager from "./Components/LayerSettingsManager";
 import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
@@ -148,11 +149,12 @@ function App() {
       <div className="w-4/5 hidden">
         <RangeSlider min={1} max={10000}/>
       </div>
-      <div className="container flex xl:flex-row flex-col bg-base-200 gap-3">
-        <div className="settings card bg-base-300">
+      <div className="container flex xl:flex-row flex-col gap-3">
+        <div className="settings card bg-base-200">
           <div className="card-body p-2">
             <div className="card-title">Settings</div>
-            <CollapsibleCard header="General Settings" forceCollapsible={true}>
+            <CollapsibleCardManager>
+            <CollapsibleCard header="General Settings" collapse={true}>
               <UploadButton onChange={loadImage} />
               <ColorPicker
                 label="Background color layer"
@@ -175,7 +177,7 @@ function App() {
                 min={2}
                 max={12}
               />
-              <div className="flex flex-col gap-2 bg-accent py-2 px-1">
+              <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
                 <LayerSettingsManager
                   onChangeLayerSettings={setLayersSettings}
                   layersSettings={layersSettings}
@@ -183,9 +185,10 @@ function App() {
                 />
               </div>
             </CollapsibleCard>
+            </CollapsibleCardManager>
           </div>
         </div>
-        <div className="render card bg-base-300 basis-10/12" ref={resultDivRef}>
+        <div className="render card bg-base-200 basis-10/12" ref={resultDivRef}>
           <div className="card-body p-2">
             <div className="card-title">Renderer</div>
             <img ref={imageRef} className="hidden"/>

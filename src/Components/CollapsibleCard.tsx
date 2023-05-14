@@ -11,7 +11,7 @@ function CollapsibleCard({  toggle, collapse = false, header, children } : Colla
 
   if(collapse) {
     return (
-      <div className="card border border-base-300 bg-base-100 rounded-box" onClick={toggle}>
+      <div className="card border border-base-300 bg-base-100 rounded-box cursor-pointer" onClick={toggle}>
         <div className="card-body p-2">
           <div className="card-title text-xl font-medium">
             {header}

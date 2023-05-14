@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import CollapsibleCardManager from "../CollapsibleCardManager";
+import CollapsibleCard from "../CollapsibleCard";
 import {
   DndContext,
   KeyboardSensor,
@@ -65,9 +67,15 @@ export function SortableList<T extends BaseItem>({
     >
       <SortableContext items={items}>
         <ul className="flex flex-col gap-3 p-0 list-none" role="application">
+          {/*<CollapsibleCardManager>*/}
           {items.map((item) => (
-            <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
+              /*<CollapsibleCard header="fdkfj" key={item.id}>*/
+            <React.Fragment key={item.id}>
+                {renderItem(item)}
+            </React.Fragment>
+              /*</CollapsibleCard>*/
           ))}
+          {/*</CollapsibleCardManager>*/}
         </ul>
       </SortableContext>
       <SortableOverlay>

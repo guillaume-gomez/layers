@@ -1,8 +1,12 @@
 import * as THREE from 'three'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { useSpring, animated } from '@react-spring/three';
+import { useSpring, animated, Globals } from '@react-spring/three';
 import React, { useRef, useEffect } from 'react';
 import { ThreeElements, useLoader } from '@react-three/fiber';
+
+Globals.assign({
+  frameLoop: "always",
+});
 
 interface ThreeJsStripeProps {
   base64Texture: string;
@@ -20,8 +24,7 @@ function ThreeJsLayer({meshProps, base64Texture, position }: ThreeJsStripeProps)
     config: { mass: 0.5, tension: 500, friction: 150, precision: 0.0001 }
   }), [meshProps])*/
 
-  const [{ z }] = useSpring(() => ({ to: { z: position[2] + 0.5 } }), [position]);
-  console.log(z)
+  const [{ x, y, z }] = useSpring(() => ({ to: { x: position[0] + 0, y: position[1] + 0, z: position[2] + 0.1 } }), [position]);
 
 
   const mesh = useRef<THREE.Mesh>(null!);
@@ -36,9 +39,9 @@ function ThreeJsLayer({meshProps, base64Texture, position }: ThreeJsStripeProps)
 
   return (
     <animated.mesh
-      position-x={position[0]}
-      position-y={position[1]}
-      position-z={position[2]}
+      position-x={x}
+      position-y={y}
+      position-z={z}
       ref={mesh}
       /*{...meshProps}*/
     >

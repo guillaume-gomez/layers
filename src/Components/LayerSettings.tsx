@@ -6,12 +6,10 @@ import { LayerSettingsData } from "../interfaces";
 
 interface LayerSettingsInterface {
   onChange: (newLayerSettings: LayerSettingsData) => void;
-  open: boolean;
-  toggle:() => void;
   layerSettings: LayerSettingsData;
 }
 
-function LayerSettings({ onChange, layerSettings, open, toggle } : LayerSettingsInterface) {
+function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
 
   function handleChangeMin(value: number) {
     onChange({ ...layerSettings, min: value });
@@ -39,20 +37,10 @@ function LayerSettings({ onChange, layerSettings, open, toggle } : LayerSettings
     onChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, y: value }});
   }
 
-  if(!open) {
-    return(
-      <div className="card bg-base-100 shadow-xl" onClick={toggle}>
-        <p>{layerSettings.id}</p>
-      </div>
-    );
-  }
-
-
   return (
   <div className="card bg-base-100 shadow-xl">
     <div className="">
       <div className="flex flex-col gap-3">
-        <p>{layerSettings.id}</p>
         <Slider
           label="Min"
           onChange={(value) => handleChangeMin(value)}

@@ -38,7 +38,7 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
   }
 
   return (
-  <div className="card bg-base-100 shadow-xl">
+  <div className="card bg-base-100">
     <div className="">
       <div className="flex flex-col gap-3">
         <Slider

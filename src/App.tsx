@@ -26,6 +26,7 @@ function App() {
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(defaultLayers);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const [backgroundColorLayer, setBackgroundColorLayer] = useState<string>("#000000");
+  const [alphaBackgroundColorLayer, setAlphaBackgroundColorLayer] = useState<number>(255);
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(380);
@@ -46,7 +47,7 @@ function App() {
 
   useEffect(() => {
     generateImagesFromLayers();
-  },[numberOfLayers, layersSettings, backgroundColorLayer, loadedImage]);
+  },[numberOfLayers, layersSettings, backgroundColorLayer, alphaBackgroundColorLayer, loadedImage]);
 
   function limitSize() {
     const newWidth = (resultDivRef.current as any).clientWidth;
@@ -81,16 +82,15 @@ function App() {
         {
           min,
           max,
-          alpha,
-          color: hexToRGB(color),
-          backgroundColor: hexToRGB(backgroundColorLayer),
+          color: hexToRGB(color, alpha),
+          backgroundColor: hexToRGB(backgroundColorLayer, alphaBackgroundColorLayer),
         }
       );
     });
     setLayersBase64(listOfCanvasBase64);
   }
 
-  function hexToRGB(hexColor: string) : RGBArray {
+  function hexToRGB(hexColor: string, alpha: number) : RGBArray {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
 
     function hexToDec(hex: string) {
@@ -101,6 +101,7 @@ function App() {
       hexToDec(result![1]),
       hexToDec(result![2]),
       hexToDec(result![3]),
+      alpha
     ];
   }
 
@@ -160,6 +161,13 @@ function App() {
                 label="Background color layer"
                 value={backgroundColorLayer}
                 onChange={(color) => setBackgroundColorLayer(color)}
+              />
+              <Slider
+                label="Alpha"
+                onChange={(value) => setAlphaBackgroundColorLayer(value)}
+                value={alphaBackgroundColorLayer}
+                min={0}
+                max={255}
               />
             </CollapsibleCard>
             <CollapsibleCard

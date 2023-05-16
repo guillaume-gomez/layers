@@ -1,4 +1,4 @@
-export type RGBArray = [number, number, number];
+export type RGBArray = [number, number, number, number];
 
 export interface position2D {
   x: number;

@@ -23,6 +23,11 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
               <LayerSettings
                 key={item.id}
                 layerSettings={item}
+                destroyable={layersSettings.length <= 1}
+                destroy={() => {
+                  const newLayerSettings = layersSettings.filter((layerSettings) => item.id !== layerSettings.id);
+                  onChangeLayerSettings(newLayerSettings);
+                }}
                 onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
               />
             </SortableList.Item>

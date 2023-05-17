@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { times } from "lodash";
+import { times, uniqueId } from "lodash";
 import { useOnWindowResize } from "rooks";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import Slider from "./Components/Slider";
@@ -17,8 +17,9 @@ import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
-  { id: "1", min: 0,  max: 70, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
-  { id: "2", min: 68, max:187, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
+  //{ id: "1", min: 0,  max: 255, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } } make it the background layer
+  { id: uniqueId(), min: 0,  max: 70, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
+  { id: uniqueId(), min: 65, max:187, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
 ]
 
 function App() {
@@ -117,7 +118,7 @@ function App() {
 
   function createLayerSettings() {
     return {
-      id: (layersSettings.length + 1).toString(),
+      id: uniqueId(),
       min: 0,
       max: Math.floor(Math.random() * 255),
       alpha: 255,
@@ -142,6 +143,13 @@ function App() {
      if(layersSettings.length > numberOfLayer) {
         setLayersSettings(layersSettings.slice(0,-diff));
      }
+  }
+
+  function onChangeLayerSettings(newLayersSettings : LayerSettingsData[]) {
+    if(newLayersSettings.length != numberOfLayers) {
+      setNumberOfLayer(newLayersSettings.length);
+    }
+    setLayersSettings(newLayersSettings);
   }
 
   return (
@@ -187,7 +195,7 @@ function App() {
               />
               <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
                 <LayerSettingsManager
-                  onChangeLayerSettings={setLayersSettings}
+                  onChangeLayerSettings={onChangeLayerSettings}
                   layersSettings={layersSettings}
                   updateLayerSettings={updateLayerSettings}
                 />

@@ -6,10 +6,12 @@ import { LayerSettingsData } from "../interfaces";
 
 interface LayerSettingsInterface {
   onChange: (newLayerSettings: LayerSettingsData) => void;
+  destroy: () => void;
+  destroyable: boolean;
   layerSettings: LayerSettingsData;
 }
 
-function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
+function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerSettingsInterface) {
 
   function handleChangeMin(value: number) {
     onChange({ ...layerSettings, min: value });
@@ -41,6 +43,7 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
   <div className="card bg-base-100">
     <div className="">
       <div className="flex flex-col gap-3">
+        <button className="btn btn-sm btn-error self-end" onClick={destroy} disabled={destroyable}>delete</button>
         <Slider
           label="Min"
           onChange={(value) => handleChangeMin(value)}

@@ -17,17 +17,14 @@ import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
-  //{ id: "1", min: 0,  max: 255, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } } make it the background layer
+  { id: "background", min: 0,  max: 255, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } },
   { id: uniqueId(), min: 0,  max: 70, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
   { id: uniqueId(), min: 65, max:187, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
 ]
 
 function App() {
-  const [numberOfLayers, setNumberOfLayer] = useState<number>(2);
   const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(defaultLayers);
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
-  const [backgroundColorLayer, setBackgroundColorLayer] = useState<string>("#000000");
-  const [alphaBackgroundColorLayer, setAlphaBackgroundColorLayer] = useState<number>(255);
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(380);
@@ -48,7 +45,7 @@ function App() {
 
   useEffect(() => {
     generateImagesFromLayers();
-  },[numberOfLayers, layersSettings, backgroundColorLayer, alphaBackgroundColorLayer, loadedImage]);
+  },[layersSettings, loadedImage]);
 
   function limitSize() {
     const newWidth = (resultDivRef.current as any).clientWidth;
@@ -83,8 +80,7 @@ function App() {
         {
           min,
           max,
-          color: hexToRGB(color, alpha),
-          backgroundColor: hexToRGB(backgroundColorLayer, alphaBackgroundColorLayer),
+          color: hexToRGB(color, alpha)
         }
       );
     });
@@ -116,6 +112,11 @@ function App() {
     setLayersSettings(newLayersSettings);
   }
 
+  function addNewLayerSettings() {
+    const newLayersSettings = [...layersSettings, createLayerSettings()];
+    setLayersSettings(newLayersSettings);
+  }
+
   function createLayerSettings() {
     return {
       id: uniqueId(),
@@ -127,28 +128,7 @@ function App() {
     };
   }
 
-  function updateNumberOfLayer(numberOfLayer: number) {
-     setNumberOfLayer(numberOfLayer);
-
-     if(layersSettings.length === numberOfLayer) {
-      return;
-     }
-
-     const diff = Math.abs(layersSettings.length - numberOfLayer);
-     if(layersSettings.length < numberOfLayer) {
-        const newElements = times(diff, createLayerSettings);
-        setLayersSettings([...layersSettings, ...newElements]);
-     }
-
-     if(layersSettings.length > numberOfLayer) {
-        setLayersSettings(layersSettings.slice(0,-diff));
-     }
-  }
-
   function onChangeLayerSettings(newLayersSettings : LayerSettingsData[]) {
-    if(newLayersSettings.length != numberOfLayers) {
-      setNumberOfLayer(newLayersSettings.length);
-    }
     setLayersSettings(newLayersSettings);
   }
 
@@ -165,18 +145,6 @@ function App() {
             <CollapsibleCardManager>
             <CollapsibleCard header="General Settings" collapse={true}>
               <UploadButton onChange={loadImage} />
-              <ColorPicker
-                label="Background color layer"
-                value={backgroundColorLayer}
-                onChange={(color) => setBackgroundColorLayer(color)}
-              />
-              <Slider
-                label="Alpha"
-                onChange={(value) => setAlphaBackgroundColorLayer(value)}
-                value={alphaBackgroundColorLayer}
-                min={0}
-                max={255}
-              />
             </CollapsibleCard>
             <CollapsibleCard
               header={
@@ -186,13 +154,8 @@ function App() {
                 </div>
               }
             >
-              <Slider
-                label="Number of layer"
-                onChange={(value) => updateNumberOfLayer(value)}
-                value={numberOfLayers}
-                min={2}
-                max={12}
-              />
+              <p>{`Number of layers : ${layersSettings.length}`}</p>
+              <button className="btn btn-primary" onClick={addNewLayerSettings}>Add a layer</button>
               <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
                 <LayerSettingsManager
                   onChangeLayerSettings={onChangeLayerSettings}

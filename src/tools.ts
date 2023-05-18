@@ -35,10 +35,9 @@ interface imageFromRangeOption {
   min: number;
   max: number;
   color: RGBArray;
-  backgroundColor: RGBArray;
 }
 
-export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min, max, color, backgroundColor} : imageFromRangeOption) : string {
+export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min, max, color} : imageFromRangeOption) : string {
   const canvas = document.createElement("canvas");
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
@@ -47,7 +46,7 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min,
   const outputContext = canvas.getContext("2d");
 
   if(greyScaleContext && outputContext) {
-    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, color, backgroundColor);
+    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, color);
     return canvas.toDataURL();
   }
 
@@ -91,9 +90,6 @@ function copyGreyCanvasByRange(
   min: number,
   max: number,
   color: RGBArray,
-  backgroundColor: RGBArray
-
-
   ) {
   const imageData = greyScaleContext.getImageData(0, 0, width, height);
   const imageDateOutput = outputContext.getImageData(0, 0, width, height);
@@ -108,10 +104,10 @@ function copyGreyCanvasByRange(
       imageDateOutput.data[i + 2] = color[2];
       imageDateOutput.data[i + 3] = color[3];
     } else {
-      imageDateOutput.data[i] = backgroundColor[0];
-      imageDateOutput.data[i + 1] = backgroundColor[1];
-      imageDateOutput.data[i + 2] = backgroundColor[2];
-      imageDateOutput.data[i + 3] = backgroundColor[3];
+      imageDateOutput.data[i] = 0;
+      imageDateOutput.data[i + 1] = 0;
+      imageDateOutput.data[i + 2] = 0;
+      imageDateOutput.data[i + 3] = 0;
     }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);

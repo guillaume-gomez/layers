@@ -54,11 +54,11 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
             0]}
         >
           {
-            layers.map((layerBase64, index) => {
+            positions2d.map((position2d, index) => {
               return <ThreeJsLayer
                         key={index}
-                        base64Texture={layerBase64}
-                        position={[positions2d[index].x , positions2d[index].y, -middleSizeOfLayersZ + (index  * zOffset)]}
+                        base64Texture={layers[index]}
+                        position={[position2d.x , position2d.y, -middleSizeOfLayersZ + (index  * zOffset)]}
                         /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
                      />
             })

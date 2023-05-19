@@ -43,7 +43,7 @@ function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerS
   <div className="card bg-base-100">
     <div className="">
       <div className="flex flex-col gap-3">
-        <button className="btn btn-sm btn-error self-end" onClick={destroy} disabled={destroyable}>delete</button>
+        <button className="btn btn-sm btn-error self-end" onClick={destroy} disabled={!destroyable}>Delete</button>
         <Slider
           label="Min"
           onChange={(value) => handleChangeMin(value)}

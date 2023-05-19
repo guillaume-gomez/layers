@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import reverse from "lodash";
 import { SortableList } from "./DND/SortableList";
 import LayerSettings from "./LayerSettings";
@@ -12,20 +12,30 @@ interface LayerSettingsManagerProps {
 }
 
 function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLayerSettings } : LayerSettingsManagerProps) {
+  const [backgroundLayer, ...otherLayers] = layersSettings;
+
   return(
     <div className="flex flex-col gap-3">
+      <LayerSettings
+                key={backgroundLayer.id}
+                layerSettings={backgroundLayer}
+                destroyable={false}
+                destroy={() => {}}
+                onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
+              />
       {
         <SortableList
-          items={layersSettings}
+          items={otherLayers}
           onChange={onChangeLayerSettings}
           renderItem={(item) => (
             <SortableList.Item id={item.id}>
               <LayerSettings
                 key={item.id}
                 layerSettings={item}
-                destroyable={layersSettings.length <= 1}
+                destroyable={otherLayers.length > 1}
                 destroy={() => {
                   const newLayerSettings = layersSettings.filter((layerSettings) => item.id !== layerSettings.id);
+                  console.log(newLayerSettings);
                   onChangeLayerSettings(newLayerSettings);
                 }}
                 onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}

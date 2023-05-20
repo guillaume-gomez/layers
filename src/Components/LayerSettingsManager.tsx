@@ -17,12 +17,12 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
   return(
     <div className="flex flex-col gap-3">
       <LayerSettings
-                key={backgroundLayer.id}
-                layerSettings={backgroundLayer}
-                destroyable={false}
-                destroy={() => {}}
-                onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
-              />
+        key={backgroundLayer.id}
+        layerSettings={backgroundLayer}
+        destroyable={false}
+        destroy={() => {}}
+        onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
+      />
       {
         <SortableList
           items={otherLayers}
@@ -35,7 +35,6 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
                 destroyable={otherLayers.length > 1}
                 destroy={() => {
                   const newLayerSettings = layersSettings.filter((layerSettings) => item.id !== layerSettings.id);
-                  console.log(newLayerSettings);
                   onChangeLayerSettings(newLayerSettings);
                 }}
                 onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}

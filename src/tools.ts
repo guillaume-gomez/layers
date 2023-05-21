@@ -97,7 +97,6 @@ function copyGreyCanvasByRange(
   for (let i = 0; i < imageData.data.length; i += 4) {
     // as gray image, all components are the same
     const value = imageData.data[i];
-    const propability = Math.random()  * 255;
     if(value >= min && value <= max) {
       imageDateOutput.data[i] = color[0];
       imageDateOutput.data[i + 1] = color[1];
@@ -111,6 +110,18 @@ function copyGreyCanvasByRange(
     }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);
+}
+
+function getRelativeRange(min: number, max: number) :number {
+  return Math.abs(max - min);
+}
+
+function shouldDraw(min: number, max: number, pixelGreyValue: number, mode: string = "default") : boolean {
+  if(mode === "default") {
+    return pixelGreyValue >= min && pixelGreyValue <= max;
+  }
+
+  return false;
 }
 
 export async function mergeImages(layersBase64: string[], width: number, height: number, backgroundColor?: string) : Promise<string> {

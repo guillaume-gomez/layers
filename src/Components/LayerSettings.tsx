@@ -30,6 +30,9 @@ function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerS
     onChange({ ...layerSettings, color: value });
   }
 
+  function handleChangePercentage(value: number) {
+    onChange({ ...layerSettings, noise: value });
+  }
 
   function handleChangeX(value: number) {
     onChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, x: value } });
@@ -66,6 +69,13 @@ function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerS
           max={255}
         />
         <ColorPicker label="Color" value={layerSettings.color} onChange={(color) => handleChangeColor(color)}/>
+        <Slider
+          label="Noise"
+          onChange={(value) => handleChangePercentage(value)}
+          value={layerSettings.noise}
+          min={0}
+          max={100}
+        />
         <Slider
           label="Alpha"
           onChange={(value) => handleChangeAlpha(value)}

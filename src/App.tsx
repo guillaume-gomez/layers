@@ -17,9 +17,9 @@ import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
-  { id: "background", min: 0,  max: 255, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } },
-  { id: uniqueId(), min: 0,  max: 70, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
-  { id: uniqueId(), min: 65, max:187, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
+  { id: "background", min: 0, max: 255, noise: 0, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } },
+  { id: uniqueId(), min: 0,  max: 70, noise: 10, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
+  { id: uniqueId(), min: 65, max:187, noise: 20, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
 ]
 
 function App() {
@@ -74,12 +74,13 @@ function App() {
     if(!canvasRef.current) {
       return;
     }
-    const listOfCanvasBase64  = layersSettings.map( ({min, max, alpha, color}, index) => {
+    const listOfCanvasBase64  = layersSettings.map( ({min, max, noise, alpha, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
         {
           min,
           max,
+          noise,
           color: hexToRGB(color, alpha)
         }
       );
@@ -122,6 +123,7 @@ function App() {
       id: uniqueId(),
       min: 0,
       max: Math.floor(Math.random() * 255),
+      noise: 10,
       alpha: 255,
       color: sampleColor(),
       position2D: { x:0, y: 0 }

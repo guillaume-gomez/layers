@@ -10,6 +10,7 @@ export interface LayerSettingsData {
   min: number;
   max: number;
   color: string;
+  noise: number;
   alpha: number;
   position2D: position2D;
 }

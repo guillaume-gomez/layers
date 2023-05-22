@@ -34,10 +34,11 @@ function convertToGrayScale(context: CanvasRenderingContext2D, width: number, he
 interface imageFromRangeOption {
   min: number;
   max: number;
+  noise: number;
   color: RGBArray;
 }
 
-export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min, max, color} : imageFromRangeOption) : string {
+export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min, max, color,noise} : imageFromRangeOption) : string {
   const canvas = document.createElement("canvas");
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
@@ -46,7 +47,7 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min,
   const outputContext = canvas.getContext("2d");
 
   if(greyScaleContext && outputContext) {
-    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, color);
+    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, noise, color);
     return canvas.toDataURL();
   }
 
@@ -89,6 +90,7 @@ function copyGreyCanvasByRange(
   height: number,
   min: number,
   max: number,
+  noise: number,
   color: RGBArray,
   ) {
   const imageData = greyScaleContext.getImageData(0, 0, width, height);
@@ -97,7 +99,7 @@ function copyGreyCanvasByRange(
   for (let i = 0; i < imageData.data.length; i += 4) {
     // as gray image, all components are the same
     const value = imageData.data[i];
-    if(value >= min && value <= max) {
+    if(shouldDraw(min, max, noise, value, "else")) {
       imageDateOutput.data[i] = color[0];
       imageDateOutput.data[i + 1] = color[1];
       imageDateOutput.data[i + 2] = color[2];
@@ -112,13 +114,12 @@ function copyGreyCanvasByRange(
   outputContext.putImageData(imageDateOutput, 0, 0);
 }
 
-function getRelativeRange(min: number, max: number) :number {
-  return Math.abs(max - min);
-}
-
-function shouldDraw(min: number, max: number, pixelGreyValue: number, mode: string = "default") : boolean {
+function shouldDraw(min: number, max: number, noise: number, pixelGreyValue: number, mode: string = "default") : boolean {
   if(mode === "default") {
-    return pixelGreyValue >= min && pixelGreyValue <= max;
+    return (pixelGreyValue >= min && pixelGreyValue <= max);
+  } else {
+    const randomChoose = Math.random() * 100;
+    return (pixelGreyValue >= min && pixelGreyValue <= max) && (randomChoose >= noise);
   }
 
   return false;

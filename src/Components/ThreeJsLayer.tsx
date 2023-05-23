@@ -32,7 +32,6 @@ function ThreeJsLayer({meshProps, base64Texture, position }: ThreeJsStripeProps)
     base64Texture
   ]);
 
-
   if(!texture) {
     return <></>;
   }
@@ -46,7 +45,7 @@ function ThreeJsLayer({meshProps, base64Texture, position }: ThreeJsStripeProps)
       /*{...meshProps}*/
     >
       <boxGeometry args={[1, 1, 0.1]} />
-      <meshPhongMaterial map={texture} opacity={0.9} transparent/>
+      <meshPhongMaterial map={texture} opacity={0.9} transparent shininess={80}/>
 
     </animated.mesh>
   )

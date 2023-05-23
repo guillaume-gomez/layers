@@ -38,7 +38,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   return (
     <div className="flex flex-col gap-5 w-full">
       <Canvas
-        camera={{ position: [0, 0.0, 1], fov: 75, far: 5 }}
+        camera={{ position: [0, 0.0, 1], fov: 75, far: 10 }}
         dpr={window.devicePixelRatio}
         onDoubleClick={toggleFullscreen}
         ref={canvasRef}
@@ -46,7 +46,11 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
       >
         <color attach="background" args={[colorToSigned24Bit(backgroundColor)]} />
         <OrbitControls makeDefault />
-        <pointLight position={[10, 10, 10]} />
+        <pointLight position={[0, 0, 10]} intensity={1.5} color={0xDDDDDD}/>
+        <pointLight position={[0, 0, -10]} intensity={0.5}  color={0xDDDDDD} />
+
+        <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xe1d014} />
+        <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xe1d014} />
         <group
           position={[
             0

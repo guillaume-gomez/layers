@@ -15,6 +15,7 @@ interface ThreeJSManagerProps {
 function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerProps) {
   const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#000000");
   const [zOffset, setZOffset] = useState<number>(0.2);
+  const [zCamera, setZCamera] = useState<number>(1);
 
   return (
     <div className="flex flex-col gap-3">
@@ -28,6 +29,15 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         min={0.1}
         max={3}
       />
+      <Slider
+        label="Camera depth"
+        onChange={(value) => setZCamera(value)}
+        value={zCamera}
+        float
+        step={0.01}
+        min={1}
+        max={10}
+      />
       <ThreeJsRendering
         layers={layers}
         width={width}
@@ -35,6 +45,7 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         backgroundColor={backgroundColor3D}
         positions2d={positions2d}
         zOffset={zOffset}
+        zCamera={zCamera}
       />
     </div>
   )

@@ -16,7 +16,6 @@ export function intToRGB(intColor: number): string {
     return "00000".substring(0, 6 - color.length) + color;
 }
 
-export function fromRGBAToString(RGBArray: color): string {
-    // TODO convert
-    return "blue";
+export function fromRGBAToString(color: RGBArray): string {
+    return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
 }

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { times, uniqueId } from "lodash";
 import { useOnWindowResize } from "rooks";
-import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
+import { imageToGrayScaleCanvas, generateImageFromRange, generateHalftone } from "./tools";
 import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
 import RangeSlider from "./Components/RangeSlider";
@@ -45,7 +45,7 @@ function App() {
 
   useEffect(() => {
     generateImagesFromLayers();
-  },[layersSettings, loadedImage]);
+  },[layersSettings, imageRef.current, loadedImage]);
 
   function limitSize() {
     const newWidth = (resultDivRef.current as any).clientWidth;
@@ -74,7 +74,7 @@ function App() {
     if(!canvasRef.current) {
       return;
     }
-    const listOfCanvasBase64  = layersSettings.map( ({min, max, noise, alpha, color}, index) => {
+    /*const listOfCanvasBase64  = layersSettings.map( ({min, max, noise, alpha, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
         {
@@ -84,7 +84,14 @@ function App() {
           color: hexToRGB(color, alpha)
         }
       );
+    });*/
+    const listOfCanvasBase64 = layersSettings.map(({color, alpha}) => {
+      return generateHalftone(
+        canvasRef!.current!,
+        hexToRGB(color, alpha)
+      );
     });
+    console.log(listOfCanvasBase64);
     setLayersBase64(listOfCanvasBase64);
   }
 

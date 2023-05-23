@@ -1,3 +1,5 @@
+import { RGBArray } from "./interfaces";
+
 export function hashCode(hexString: string) : number {
     let hash = 0;
     for (let i = 0; i < hexString.length; i++) {
@@ -12,4 +14,9 @@ export function intToRGB(intColor: number): string {
         .toUpperCase();
 
     return "00000".substring(0, 6 - color.length) + color;
+}
+
+export function fromRGBAToString(RGBArray: color): string {
+    // TODO convert
+    return "blue";
 }

@@ -1,4 +1,5 @@
 import { RGBArray } from "./interfaces";
+import { fromRGBAToString } from "./colorConverterTools";
 
 export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCanvasElement) {
   canvas.width = image.width;
@@ -54,6 +55,23 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min,
   throw new Error("Cannot find the greyScaleContext or outputContext");
 }
 
+export function generateHalftone(greyScaleCanvas: HTMLCanvasElement, color: RGBArray) : string {
+  const canvas = document.createElement("canvas");
+  canvas.width = greyScaleCanvas.width;
+  canvas.height = greyScaleCanvas.height;
+
+  const greyScaleContext = greyScaleCanvas.getContext("2d");
+  const outputContext = canvas.getContext("2d");
+
+  if(greyScaleContext && outputContext) {
+    halftone(greyScaleContext, outputContext, canvas.width, canvas.height, color, true, 5, 4);
+    return canvas.toDataURL();
+  }
+
+  throw new Error("Cannot find the greyScaleContext or outputContext");
+}
+
+
 function averageArea(context: CanvasRenderingContext2D, areaWidth: number, x: number, y: number) : RGBArray {
   const pixels = context.getImageData(x,y, areaWidth, areaWidth);
   const { data } = pixels;
@@ -79,6 +97,37 @@ function fillArea(outputContext: CanvasRenderingContext2D, areaWidth: number, x:
       imageDateOutput.data[i + 1] = choosenColor[1];
       imageDateOutput.data[i + 2] = choosenColor[2];
       imageDateOutput.data[i + 3] = choosenColor[3];
+  }
+}
+
+function halftone(
+  greyScaleContext: CanvasRenderingContext2D,
+  outputContext: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  color: RGBArray,
+  grid: boolean,
+  dotSize: number,
+  spacing: number
+  ) {
+  const imageData = greyScaleContext.getImageData(0, 0, width, height);
+  outputContext.fillStyle = fromRGBAToString(color);
+
+  let xOffset = 0;
+  for (let y = 0; y < width; y += dotSize + spacing) {
+    for (let x = xOffset; x < height; x += dotSize + spacing) {
+
+      const pixelColorGrey = greyScaleContext.getImageData(x + (dotSize/2), y + (dotSize/2), 1, 1);
+      // pixelColorGrey has the same value for R,G,B
+      const size = (1-(pixelColorGrey.data[0]/255)) * Math.sqrt(2);
+      outputContext.beginPath();
+      outputContext.arc(x, y, size * dotSize, 0, 2 * Math.PI);
+      outputContext.fill();
+    }
+
+    if(!grid) {
+      xOffset = (xOffset === 0) ? dotSize/2 : 0;
+    }
   }
 }
 

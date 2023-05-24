@@ -1,18 +1,15 @@
 import { useState } from 'react'
 import Slider from "./Slider";
 import ColorPicker from "./ColorPicker";
-import CollapsibleCard from "./CollapsibleCard";
 import { LayerSettingsData } from "../interfaces";
 
 
 interface LayerSettingsInterface {
   onChange: (newLayerSettings: LayerSettingsData) => void;
-  destroy: () => void;
-  destroyable: boolean;
   layerSettings: LayerSettingsData;
 }
 
-function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerSettingsInterface) {
+function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
 
   function handleChangeMin(value: number) {
     onChange({ ...layerSettings, min: value });
@@ -43,16 +40,6 @@ function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerS
   }
 
   return (
-    <CollapsibleCard
-      header={
-        <div className="flex flex-wrap items-center w-full justify-between">
-          <span>{layerSettings.id}</span>
-          <button className="btn btn-circle btn-outline-error btn-sm" onClick={destroy} disabled={!destroyable}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-      }
-    >
       <div className="flex flex-col gap-3">
         <Slider
           label="Min"
@@ -102,7 +89,6 @@ function LayerSettings({ onChange, layerSettings,destroy, destroyable } : LayerS
           step={0.001}
         />
       </div>
-    </CollapsibleCard>
   )
 }
 

@@ -5,7 +5,7 @@ import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
 import RangeSlider from "./Components/RangeSlider";
-import { RGBArray, LayerSettingsData } from "./interfaces";
+import { RGBArray, LayerSettingsData, QualityType } from "./interfaces";
 import UploadButton from "./Components/UploadButton";
 import { sampleColor } from "./Components/palette";
 import ThreeJSManager from "./Components/ThreeJSManager";
@@ -29,10 +29,12 @@ function App() {
   const [is2D, setIs2D] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(380);
   const [height, setHeight] = useState<number>(380 * 16/9);
+  const [quality, setQuality] = useState<QualityType>("max");
 
   const resultDivRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRefTest = useRef<HTMLCanvasElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,14 +56,13 @@ function App() {
     const newPredefinedWidth = newWidth - 50;
     setWidth(newPredefinedWidth);
     setHeight(newPredefinedWidth * 9/16);
-
   }
 
   function loadImage(file: File) {
     if(imageRef.current && canvasRef.current) {
       imageRef.current.src = URL.createObjectURL(file);
       imageRef.current.onload =  (event: any) => {
-          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!);
+          imageToGrayScaleCanvas(imageRef.current!, canvasRef.current!, quality);
           setLoadedImage(true);
           if(resultRef.current) {
             resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -146,6 +147,16 @@ function App() {
             <div className="card-title">Settings</div>
             <CollapsibleCardManager>
             <CollapsibleCard header="General Settings" collapse={true}>
+              <select
+                className="select select-bordered w-full max-w-xs"
+                value={quality}
+                onChange={(e) => setQuality(e.target.value as QualityType)}
+              >
+                <option disabled selected>Quality of result</option>
+                <option value="min">Min</option>
+                <option value="middle">Middle</option>
+                <option value="max">Max</option>
+              </select>
               <UploadButton onChange={loadImage} />
             </CollapsibleCard>
             <CollapsibleCard
@@ -174,6 +185,7 @@ function App() {
             <div className="card-title">Renderer</div>
             <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />
+            <canvas ref={canvasRefTest} className="hidden" />
             <div className="form-control">
               <label className="label cursor-pointer">
                 <span className="label-text">2D</span>
@@ -185,8 +197,8 @@ function App() {
                 is2D ?
                     <Canvas2DManager
                       layers={layersBase64}
-                      width={imageRef?.current?.width || width}
-                      height={imageRef?.current?.height || height}
+                      width={canvasRef?.current?.width || width}
+                      height={canvasRef?.current?.height || height}
                     />
                   :
                     <ThreeJSManager

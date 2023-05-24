@@ -34,7 +34,6 @@ function App() {
   const resultDivRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasRefTest = useRef<HTMLCanvasElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,6 +47,13 @@ function App() {
   useEffect(() => {
     generateImagesFromLayers();
   },[layersSettings, loadedImage]);
+
+  useEffect(() => {
+    if(imageRef.current && imageRef.current.width > 0 && canvasRef.current) {
+      imageToGrayScaleCanvas(imageRef.current, canvasRef.current, quality);
+      generateImagesFromLayers();
+    }
+  }, [quality])
 
   function limitSize() {
     const newWidth = (resultDivRef.current as any).clientWidth;
@@ -185,7 +191,6 @@ function App() {
             <div className="card-title">Renderer</div>
             <img ref={imageRef} className="hidden"/>
             <canvas ref={canvasRef} className="hidden" />
-            <canvas ref={canvasRefTest} className="hidden" />
             <div className="form-control">
               <label className="label cursor-pointer">
                 <span className="label-text">2D</span>

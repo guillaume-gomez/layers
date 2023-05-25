@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Slider from "./Slider";
-import ColorPicker from "./ColorPicker";
+import ColorPickerAlpha from "./ColorPickerAlpha";
 import { LayerSettingsData } from "../interfaces";
 
 
@@ -17,10 +17,6 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
 
   function handleChangeMax(value: number) {
     onChange({ ...layerSettings, max: value });
-  }
-
-  function handleChangeAlpha(value: number) {
-    onChange({ ...layerSettings, alpha: value });
   }
 
   function handleChangeColor(value: string) {
@@ -55,20 +51,13 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
           min={0}
           max={255}
         />
-        <ColorPicker label="Color" value={layerSettings.color} onChange={(color) => handleChangeColor(color)}/>
+        <ColorPickerAlpha label="Color" value={layerSettings.color} onChange={(color) => handleChangeColor(color)}/>
         <Slider
           label="Noise"
           onChange={(value) => handleChangePercentage(value)}
           value={layerSettings.noise}
           min={0}
           max={100}
-        />
-        <Slider
-          label="Alpha"
-          onChange={(value) => handleChangeAlpha(value)}
-          value={layerSettings.alpha}
-          min={0}
-          max={255}
         />
         <Slider
           label="position X"

@@ -17,9 +17,9 @@ import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import './App.css'
 
 const defaultLayers = [
-  { id: "background", min: 0, max: 255, noise: 0, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } },
-  { id: uniqueId(), min: 0,  max: 70, noise: 10, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
-  { id: uniqueId(), min: 65, max:187, noise: 20, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
+  { id: "Background", min: 0, max: 255, noise: 0, color:"#000000FF", position2D: { x:0, y: 0 } },
+  { id: uniqueId("Layer "), min: 0,  max: 70, noise: 10, color:"#ff005988", position2D: { x:0, y: 0 } },
+  { id: uniqueId("Layer "), min: 65, max:187, noise: 20, color: "#168D16DD", position2D: { x:0, y: 0 } }
 ]
 
 function App() {
@@ -74,32 +74,35 @@ function App() {
     if(!canvasRef.current) {
       return;
     }
-    const listOfCanvasBase64  = layersSettings.map( ({min, max, noise, alpha, color}, index) => {
+    const listOfCanvasBase64  = layersSettings.map( ({min, max, noise, color}, index) => {
       return generateImageFromRange(
         canvasRef!.current!,
         {
           min,
           max,
           noise,
-          color: hexToRGB(color, alpha)
+          color: hexToRGBA(color)
         }
       );
     });
     setLayersBase64(listOfCanvasBase64);
   }
 
-  function hexToRGB(hexColor: string, alpha: number) : RGBArray {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
+  function hexToRGBA(hexColor: string) : RGBArray {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
+    //const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
 
     function hexToDec(hex: string) {
       return parseInt(hex, 16);
     }
+    console.log(hexColor);
+    console.log("result -> ", result);
 
     return [
       hexToDec(result![1]),
       hexToDec(result![2]),
       hexToDec(result![3]),
-      alpha
+      hexToDec(result![4])
     ];
   }
 
@@ -120,12 +123,11 @@ function App() {
 
   function createLayerSettings() {
     return {
-      id: uniqueId(),
+      id: uniqueId("Layer "),
       min: 0,
       max: Math.floor(Math.random() * 255),
       noise: 10,
-      alpha: 255,
-      color: sampleColor(),
+      color: `${sampleColor()}AA`,
       position2D: { x:0, y: 0 }
     };
   }

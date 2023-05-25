@@ -14,16 +14,15 @@
     "@react-spring/three": "^9.7.1",
     "@react-three/drei": "^9.64.0",
     "@react-three/fiber": "^8.12.0",
-    "@types/date-fns": "^2.6.0",
     "@types/lodash": "^4.14.192",
     "@types/three": "^0.150.1",
-    "daisyui": "^2.51.5",
+    "daisyui": "^2.51.6",
     "date-fns": "^2.29.3",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-click-away-listener": "^2.2.3",
     "react-dom": "^18.2.0",
-    "rooks": "^7.10.0",
+    "rooks": "^7.11.3",
     "three": "^0.151.3"
   },
   "devDependencies": {

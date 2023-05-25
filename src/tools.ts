@@ -33,12 +33,11 @@ function convertToGrayScale(context: CanvasRenderingContext2D, width: number, he
 interface imageFromRangeOption {
   min: number;
   max: number;
-  alpha: number;
+  noise: number;
   color: RGBArray;
-  backgroundColor: RGBArray;
 }
 
-export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min, max, alpha, color, backgroundColor} : imageFromRangeOption) : string {
+export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min, max, color,noise} : imageFromRangeOption) : string {
   const canvas = document.createElement("canvas");
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
@@ -47,7 +46,7 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min,
   const outputContext = canvas.getContext("2d");
 
   if(greyScaleContext && outputContext) {
-    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, alpha, color, backgroundColor);
+    copyGreyCanvasByRange(greyScaleContext, outputContext, canvas.width, canvas.height, min, max, noise, color);
     return canvas.toDataURL();
   }
 
@@ -69,16 +68,16 @@ function averageArea(context: CanvasRenderingContext2D, areaWidth: number, x: nu
     blue += data[i + 2];
   }
 
-  return [(red/numberOfPixels), (green/numberOfPixels), (blue/numberOfPixels)];
+  return [(red/numberOfPixels), (green/numberOfPixels), (blue/numberOfPixels), 255];
 }
 
-function fillArea(outputContext: CanvasRenderingContext2D, areaWidth: number, x: number, y: number, choosenColor : RGBArray, alpha: number) {
+function fillArea(outputContext: CanvasRenderingContext2D, areaWidth: number, x: number, y: number, choosenColor : RGBArray) {
   const imageDateOutput = outputContext.getImageData(0, 0, areaWidth, areaWidth);
   for (let i = 0; i < imageDateOutput.data.length; i += 4) {
       imageDateOutput.data[i] = choosenColor[0];
       imageDateOutput.data[i + 1] = choosenColor[1];
       imageDateOutput.data[i + 2] = choosenColor[2];
-      imageDateOutput.data[i + 3] = alpha;
+      imageDateOutput.data[i + 3] = choosenColor[3];
   }
 }
 
@@ -90,10 +89,8 @@ function copyGreyCanvasByRange(
   height: number,
   min: number,
   max: number,
-  alpha: number,
+  noise: number,
   color: RGBArray,
-  backgroundColor: RGBArray
-
   ) {
   const imageData = greyScaleContext.getImageData(0, 0, width, height);
   const imageDateOutput = outputContext.getImageData(0, 0, width, height);
@@ -101,19 +98,30 @@ function copyGreyCanvasByRange(
   for (let i = 0; i < imageData.data.length; i += 4) {
     // as gray image, all components are the same
     const value = imageData.data[i];
-    if(value >= min && value < max) {
+    if(shouldDraw(min, max, noise, value, "else")) {
       imageDateOutput.data[i] = color[0];
       imageDateOutput.data[i + 1] = color[1];
       imageDateOutput.data[i + 2] = color[2];
-      imageDateOutput.data[i + 3] = alpha;
+      imageDateOutput.data[i + 3] = color[3];
     } else {
-      imageDateOutput.data[i] = backgroundColor[0];
-      imageDateOutput.data[i + 1] = backgroundColor[1];
-      imageDateOutput.data[i + 2] = backgroundColor[2];
-      imageDateOutput.data[i + 3] = alpha;
+      imageDateOutput.data[i] = 0;
+      imageDateOutput.data[i + 1] = 0;
+      imageDateOutput.data[i + 2] = 0;
+      imageDateOutput.data[i + 3] = 0;
     }
   }
   outputContext.putImageData(imageDateOutput, 0, 0);
+}
+
+function shouldDraw(min: number, max: number, noise: number, pixelGreyValue: number, mode: string = "default") : boolean {
+  if(mode === "default") {
+    return (pixelGreyValue >= min && pixelGreyValue <= max);
+  } else {
+    const randomChoose = Math.random() * 100;
+    return (pixelGreyValue >= min && pixelGreyValue <= max) && (randomChoose >= noise);
+  }
+
+  return false;
 }
 
 export async function mergeImages(layersBase64: string[], width: number, height: number, backgroundColor?: string) : Promise<string> {

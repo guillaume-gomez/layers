@@ -5,32 +5,41 @@ import { LayerSettingsData } from "../interfaces";
 
 
 interface LayerSettingsInterface {
-  onChange: (min: number, max: number, alpha: number, color: string) => void;
+  onChange: (newLayerSettings: LayerSettingsData) => void;
   layerSettings: LayerSettingsData;
 }
 
 function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
 
   function handleChangeMin(value: number) {
-    onChange(value, layerSettings.max, layerSettings.alpha, layerSettings.color);
+    onChange({ ...layerSettings, min: value });
   }
 
   function handleChangeMax(value: number) {
-    onChange(layerSettings.min, value, layerSettings.alpha, layerSettings.color);
+    onChange({ ...layerSettings, max: value });
   }
 
   function handleChangeAlpha(value: number) {
-    onChange(layerSettings.min, layerSettings.max, value, layerSettings.color);
+    onChange({ ...layerSettings, alpha: value });
   }
 
   function handleChangeColor(value: string) {
-    onChange(layerSettings.min, layerSettings.max, layerSettings.alpha ,value);
+    onChange({ ...layerSettings, color: value });
+  }
+
+  function handleChangePercentage(value: number) {
+    onChange({ ...layerSettings, noise: value });
+  }
+
+  function handleChangeX(value: number) {
+    onChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, x: value } });
+  }
+
+  function handleChangeY(value: number) {
+    onChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, y: value }});
   }
 
   return (
-  <div className="card">
-    <div className="card-body">
-      <h2 className="card-title">Layer Settings</h2>
       <div className="flex flex-col gap-3">
         <Slider
           label="Min"
@@ -48,15 +57,38 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
         />
         <ColorPicker label="Color" value={layerSettings.color} onChange={(color) => handleChangeColor(color)}/>
         <Slider
+          label="Noise"
+          onChange={(value) => handleChangePercentage(value)}
+          value={layerSettings.noise}
+          min={0}
+          max={100}
+        />
+        <Slider
           label="Alpha"
           onChange={(value) => handleChangeAlpha(value)}
           value={layerSettings.alpha}
           min={0}
           max={255}
         />
+        <Slider
+          label="position X"
+          onChange={(value) => handleChangeX(value)}
+          value={layerSettings.position2D.x}
+          min={-1}
+          max={1}
+          float
+          step={0.001}
+        />
+        <Slider
+          label="position Y"
+          onChange={(value) => handleChangeY(value)}
+          value={layerSettings.position2D.y}
+          min={-1}
+          max={1}
+          float
+          step={0.001}
+        />
       </div>
-    </div>
-  </div>
   )
 }
 

@@ -11,11 +11,12 @@ interface ThreejsRenderingProps {
   width: number;
   height: number;
   backgroundColor: string;
-  zOffset?: number;
+  opacityLayer?: number;
+  zOffset?: number
   zCamera: number;
-}
+ }
 
-function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zCamera, zOffset = 0.1 } : ThreejsRenderingProps) {
+function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zCamera, zOffset = 0.1, opacityLayer = 0.9 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraControlRef = useRef<any>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
@@ -42,11 +43,10 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
       <button
           type="button"
           onClick={() => {
-            //debugger
             cameraControlRef.current?.rotate(Math.PI / 4, 0, true);
           }}
         >
-          fjdkdfj
+          Rotate 45% on X
         </button>
       <Canvas
         camera={{ position: [0, 0.0, 1], fov: 75, far: 10 }}
@@ -76,6 +76,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
               return <ThreeJsLayer
                         key={index}
                         base64Texture={layers[index]}
+                        opacity={opacityLayer}
                         position={[position2d.x , position2d.y, -middleSizeOfLayersZ + (index  * zOffset)]}
                         /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
                      />

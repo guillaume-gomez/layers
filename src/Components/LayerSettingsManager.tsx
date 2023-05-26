@@ -55,8 +55,10 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
                   toggle={ () => setIdOpenCollabsibleCard(item.id) }
                   header={
                     <div className="flex flex-wrap items-center w-full justify-between">
-                      <span>{item.id}</span>
-                      <div className={`w-6 h-6 rounded mx-1 my-1`} style={{background: item.color}}></div>
+                      <div className="flex items-center">
+                        <span>{item.id}</span>
+                        <div className={`w-6 h-6 rounded mx-1 my-1`} style={{background: item.color}}></div>
+                      </div>
                       <button className="btn btn-circle btn-outline-error btn-sm" onClick={() =>{destroyLayer(item.id)}} disabled={otherLayers.length === 1}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                       </button>

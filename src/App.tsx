@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { times, uniqueId } from "lodash";
-import { useOnWindowResize } from "rooks";
+import { useWindowSize } from "rooks";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import Slider from "./Components/Slider";
 import ColorPicker from "./Components/ColorPicker";
@@ -35,13 +35,13 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
+  const { innerWidth, innerHeight } = useWindowSize();
+
+
   useEffect(() => {
     limitSize();
-  }, [])
+  }, [innerHeight, innerWidth])
 
-  useOnWindowResize(() => {
-    limitSize();
-  });
 
   useEffect(() => {
     generateImagesFromLayers();
@@ -51,7 +51,7 @@ function App() {
     const newWidth = (resultDivRef.current as any).clientWidth;
     const newHeight = (resultDivRef.current as any).clientHeight;
 
-    const newPredefinedWidth = newWidth - 50;
+    const newPredefinedWidth = newWidth - 100;
     setWidth(newPredefinedWidth);
     setHeight(newPredefinedWidth * 9/16);
 
@@ -140,8 +140,8 @@ function App() {
       <div className="w-4/5 hidden">
         <RangeSlider min={1} max={10000}/>
       </div>
-      <div className="container flex xl:flex-row flex-col gap-3">
-        <div className="settings card bg-base-200">
+      <div className="w-full flex md:flex-row flex-col gap-3 md:p-5 p-2">
+        <div className="settings card bg-base-200" style={{ minWidth: 325 }}>
           <div className="card-body p-2">
             <div className="card-title">Settings</div>
             <CollapsibleCardManager>
@@ -169,7 +169,7 @@ function App() {
             </CollapsibleCardManager>
           </div>
         </div>
-        <div className="render card bg-base-200 basis-10/12" ref={resultDivRef}>
+        <div className="render card bg-base-200 w-full" ref={resultDivRef}>
           <div className="card-body p-2">
             <div className="card-title">Renderer</div>
             <img ref={imageRef} className="hidden"/>

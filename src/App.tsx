@@ -58,6 +58,7 @@ function App() {
   }
 
   function loadImage(file: File) {
+    setLoadedImage(false);
     if(imageRef.current && canvasRef.current) {
       imageRef.current.src = URL.createObjectURL(file);
       imageRef.current.onload =  (event: any) => {

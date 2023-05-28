@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Slider from "./Slider";
 import ColorPicker from "./ColorPicker";
 import { LayerSettingsData } from "../interfaces";
+import { throttle } from "lodash";
 
 
 interface LayerSettingsInterface {
@@ -14,33 +15,34 @@ type TabName = typeof TabNames[number];
 
 function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
   const [selectedTab, setSelectedTab] = useState<TabName>("color");
+  const throttleOnChange = useCallback(throttle(onChange, 500), []);
 
   function handleChangeMin(value: number) {
-    onChange({ ...layerSettings, min: value });
+    throttleOnChange({ ...layerSettings, min: value });
   }
 
   function handleChangeMax(value: number) {
-    onChange({ ...layerSettings, max: value });
+    throttleOnChange({ ...layerSettings, max: value });
   }
 
   function handleChangeAlpha(value: number) {
-    onChange({ ...layerSettings, alpha: value });
+    throttleOnChange({ ...layerSettings, alpha: value });
   }
 
   function handleChangeColor(value: string) {
-    onChange({ ...layerSettings, color: value });
+    throttleOnChange({ ...layerSettings, color: value });
   }
 
   function handleChangePercentage(value: number) {
-    onChange({ ...layerSettings, noise: value });
+    throttleOnChange({ ...layerSettings, noise: value });
   }
 
   function handleChangeX(value: number) {
-    onChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, x: value } });
+    throttleOnChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, x: value } });
   }
 
   function handleChangeY(value: number) {
-    onChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, y: value }});
+    throttleOnChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, y: value }});
   }
 
   function renderTab() {
@@ -119,6 +121,7 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
             TabNames.map(tabName => {
             return(
               <a
+                key={tabName}
                 onClick={() => setSelectedTab(tabName)}
                 className={`tab tab-sm ${selectedTab === tabName ? "tab-active" :"" }`}
               >

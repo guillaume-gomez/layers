@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { throttle } from "lodash";
 import ClickAwayListener from 'react-click-away-listener';
 import { palette, findColorByName } from "./palette";
 
@@ -23,6 +24,8 @@ function ColorPicker({label, value, onChange} : ColorPickerInterface) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [iconColorClass, setIconColorClass] = useState<string>("text-white");
 
+  const throttleOnChangeInputColor = useCallback(throttle(onChangeInputColor, 500), []);
+
   function selectColor(color: string) {
     onChange(color);
     if (IN_BLACK.includes(color)) {
@@ -33,21 +36,28 @@ function ColorPicker({label, value, onChange} : ColorPickerInterface) {
     }
   }
 
+  function onChangeInputColor(color: string) {
+    selectColor(color);
+  }
+
+
+
   function handleClickAway() {
     setIsOpen(!isOpen);
   }
 
   return (
     <div>
-      <label className="block mb-1 text-base font-semibold">{label}</label>
-      <div className="flex flex-row relative">
-        <input id="color-picker" disabled className="w-full border border-gray-400 p-2 rounded-lg text-white" value={value} />
-        <input type="color" className="absolute h-full w-10/12 opacity-0" value={value} onChange={(e) => selectColor(e.target.value)}/>
-        <div
-          onClick={()=> setIsOpen(!isOpen)}
-          style={{background: value }}
-          className={`cursor-pointer rounded-full ml-3 my-auto h-10 w-10 flex`}
-        >
+      <div>
+        <label className="block mb-1 text-base font-semibold">{label}</label>
+        <div className="flex flex-row relative">
+          <input id="color-picker" disabled className="w-full border border-gray-400 p-2 rounded-lg text-white" value={value}  />
+          <input type="color" className="absolute h-full w-10/12 opacity-0" value={value} onChange={(e) => throttleOnChangeInputColor(e.target.value) }/>
+          <div
+            onClick={()=> setIsOpen(!isOpen)}
+            style={{background: value }}
+            className={`cursor-pointer rounded-full ml-3 my-auto h-10 w-10 flex`}
+          >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={`${iconColorClass} h-6 w-6 mx-auto my-auto`}

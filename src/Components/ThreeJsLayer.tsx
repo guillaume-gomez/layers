@@ -12,10 +12,11 @@ interface ThreeJsStripeProps {
   base64Texture: string;
   meshProps?: ThreeElements['mesh'];
   position: [number, number, number];
+  opacity?: number;
 }
 
 
-function ThreeJsLayer({meshProps, base64Texture, position }: ThreeJsStripeProps) {
+function ThreeJsLayer({meshProps, base64Texture, position, opacity = 0.9 }: ThreeJsStripeProps) {
   // bad example https://codesandbox.io/s/try-to-do-zgit5?file=/src/App.js:1254-1857
   // to fix here is an example https://codesandbox.io/s/try-to-do-forked-gwy21?file=/src/App.js
 /*  const [{ position }, api] = useSpring<any>(() =>({
@@ -45,8 +46,7 @@ function ThreeJsLayer({meshProps, base64Texture, position }: ThreeJsStripeProps)
       /*{...meshProps}*/
     >
       <boxGeometry args={[1, 1, 0.1]} />
-      <meshPhongMaterial map={texture} opacity={0.9} transparent shininess={80}/>
-
+      <meshPhongMaterial map={texture} opacity={opacity} transparent shininess={80}/>
     </animated.mesh>
   )
 }

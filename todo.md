@@ -8,3 +8,4 @@ https://www.mattkeeter.com/projects/swingline/
 https://dahtah.github.io/imager/stippling.html
 https://observablehq.com/@mbostock/voronoi-stippling
 https://mfkasim1.github.io/2016/12/06/stippling-pictures-with-lloyds-algorithm/
+https://github.com/Milchreis/processing-imageprocessing/blob/4d31cda93c48daf07f0f0d2f72e0b287d02266fe/src/milchreis/imageprocessing/Halftone.java#L62 -> link https://stackoverflow.com/questions/17326842/halftone-image-effect

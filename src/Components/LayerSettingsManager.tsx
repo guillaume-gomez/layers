@@ -4,6 +4,7 @@ import { SortableList } from "./DND/SortableList";
 import LayerSettings from "./LayerSettings";
 import { LayerSettingsData } from "../interfaces";
 import CollapsibleCard from "./CollapsibleCard";
+import CollapsibleCardManager from "./CollapsibleCardManager";
 
 interface LayerSettingsManagerProps {
   layersSettings: LayerSettingsData[];
@@ -11,38 +12,69 @@ interface LayerSettingsManagerProps {
   updateLayerSettings: (newLayerSettings : LayerSettingsData) => void;
 }
 
+// due to props drilling collapsiblecardManager is not relevant here
 function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLayerSettings } : LayerSettingsManagerProps) {
   const [backgroundLayer, ...otherLayers] = layersSettings;
+  const [openIdCollabsibleCard, setIdOpenCollabsibleCard] = useState<string>(backgroundLayer.id);
+
+  function destroyLayer(layerSettingId: string) {
+    const newLayerSettings = layersSettings.filter((layerSettings) => layerSettingId !== layerSettings.id);
+    onChangeLayerSettings(newLayerSettings);
+  }
 
   return(
     <div className="flex flex-col gap-3">
-      <LayerSettings
-        key={backgroundLayer.id}
-        layerSettings={backgroundLayer}
-        destroyable={false}
-        destroy={() => {}}
-        onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
-      />
-      {
-        <SortableList
-          items={otherLayers}
-          onChange={onChangeLayerSettings}
-          renderItem={(item) => (
-            <SortableList.Item id={item.id}>
-              <LayerSettings
-                key={item.id}
-                layerSettings={item}
-                destroyable={otherLayers.length > 1}
-                destroy={() => {
-                  const newLayerSettings = layersSettings.filter((layerSettings) => item.id !== layerSettings.id);
-                  onChangeLayerSettings(newLayerSettings);
-                }}
-                onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
-              />
-            </SortableList.Item>
-          )}
-        />
-      }
+        <CollapsibleCard
+          key={backgroundLayer.id}
+          collapse={backgroundLayer.id !== openIdCollabsibleCard}
+          toggle={() => setIdOpenCollabsibleCard(backgroundLayer.id) }
+          header={
+            <div className="flex flex-wrap items-center w-full justify-between">
+              <span>{backgroundLayer.id}</span>
+              <button className="btn btn-circle btn-outline-error btn-sm" disabled={true}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+          }
+        >
+          <LayerSettings
+            key={backgroundLayer.id}
+            layerSettings={backgroundLayer}
+            onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
+          />
+        </CollapsibleCard>
+        {
+          <SortableList
+            items={otherLayers}
+            onChange={(otherLayers) => onChangeLayerSettings([backgroundLayer, ...otherLayers])}
+            renderItem={(item) => (
+              <SortableList.Item id={item.id}>
+                <CollapsibleCard
+                  key={item.id}
+                  collapse={item.id !== openIdCollabsibleCard}
+                  toggle={ () => setIdOpenCollabsibleCard(item.id) }
+                  header={
+                    <div className="flex flex-wrap items-center w-full justify-between">
+                      <div className="flex items-center">
+                        <span>{item.id}</span>
+                        <div className={`w-6 h-6 rounded mx-1 my-1`} style={{background: item.color}}></div>
+                      </div>
+                      <button className="btn btn-circle btn-outline-error btn-sm" onClick={() =>{destroyLayer(item.id)}} disabled={otherLayers.length === 1}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    </div>
+                  }
+                >
+                  <LayerSettings
+                    key={item.id}
+                    layerSettings={item}
+                    onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
+                  />
+                </CollapsibleCard>
+              </SortableList.Item>
+            )}
+          />
+        }
     </div>
   );
 }

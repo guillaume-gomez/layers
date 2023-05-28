@@ -7,7 +7,7 @@ interface CollapsibleCardProps {
   children: React.ReactNode
 }
 
-function CollapsibleCard({  toggle, collapse = false, header, children } : CollapsibleCardProps): React.ReactElement {
+function CollapsibleCard({ toggle, collapse = false, header, children } : CollapsibleCardProps): React.ReactElement {
 
   if(collapse) {
     return (

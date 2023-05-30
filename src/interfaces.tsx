@@ -14,3 +14,4 @@ export interface LayerSettingsData {
   alpha: number;
   position2D: position2D;
 }
+export type QualityType = "min" | "middle" | "max";

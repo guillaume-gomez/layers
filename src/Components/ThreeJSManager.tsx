@@ -15,6 +15,7 @@ interface ThreeJSManagerProps {
 function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerProps) {
   const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#000000");
   const [zOffset, setZOffset] = useState<number>(0.2);
+  const [opacityLayer, setOpacityLayer] = useState<number>(0.9);
   const [zCamera, setZCamera] = useState<number>(1);
 
   return (
@@ -29,6 +30,15 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         min={0.1}
         max={3}
       />
+      <Slider
+        label="Opacity of a Layer"
+        onChange={(value) => setOpacityLayer(value)}
+        value={opacityLayer}
+        float
+        step={0.01}
+        min={0.01}
+        max={0.99}
+        />
       <Slider
         label="Camera depth"
         onChange={(value) => setZCamera(value)}
@@ -45,6 +55,7 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         backgroundColor={backgroundColor3D}
         positions2d={positions2d}
         zOffset={zOffset}
+        opacityLayer={opacityLayer}
         zCamera={zCamera}
       />
     </div>

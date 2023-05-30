@@ -1,7 +1,5 @@
 import { RGBArray, QualityType } from "./interfaces";
 
-
-
 const qualityHash = {
   "max": { width: 1920, height: 1080 },
   "middle": { width: 1920/2, height: 1080/2 },
@@ -16,21 +14,6 @@ export function imageToGrayScaleCanvas(image : HTMLImageElement, canvas: HTMLCan
     throw new Error("Cannot find context");
   }
   context.drawImage(image, 0, 0);
-  convertToGrayScale(context, image.width, image.height);
-}
-
-// randomise depending of scale
-
-function convertToGrayScale(context: CanvasRenderingContext2D, width: number, height: number) {
-  const imageData = context.getImageData(0, 0, width, height);
-  for (let i = 0; i < imageData.data.length; i += 4) {
-   const red = imageData.data[i];
-   const green = imageData.data[i + 1];
-   const blue = imageData.data[i + 2];
-   // use gimp algorithm to generate prosper grayscale
-   const gray = (red * 0.3 + green * 0.59 + blue * 0.11);
-
-
   // mutate the result by resizing it
   if(
       image.width > qualityHash[levelOfPerformance].width ||
@@ -98,7 +81,7 @@ export async function mergeImages(layersBase64: string[], width: number, height:
     return canvas.toDataURL(`image/png`);
 }
 
-// randomise depending of scale
+
 function convertToGrayScale(context: CanvasRenderingContext2D, width: number, height: number) {
   const imageData = context.getImageData(0, 0, width, height);
   for (let i = 0; i < imageData.data.length; i += 4) {

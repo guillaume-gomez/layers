@@ -14,6 +14,7 @@ import CollapsibleCard from "./Components/CollapsibleCard";
 import CollapsibleCardManager from "./Components/CollapsibleCardManager";
 import LayerSettingsManager from "./Components/LayerSettingsManager";
 import LayerSettingsInfo from "./Components/LayerSettingsInfo";
+import Header from "./Components/Header";
 import './App.css'
 
 const defaultLayers = [
@@ -143,12 +144,12 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>Header</h1>
+    <div className="flex flex-col justify-center items-center md:p-5 p-2 gap-3">
       <div className="w-4/5 hidden">
         <RangeSlider min={1} max={10000}/>
       </div>
-      <div className="w-full flex md:flex-row flex-col gap-3 md:p-5 p-2">
+      <Header/>
+      <div className="w-full flex md:flex-row flex-col gap-3">
         <div className="settings card bg-base-200" style={{ minWidth: 325 }}>
           <div className="card-body p-2">
             <div className="card-title">Settings</div>

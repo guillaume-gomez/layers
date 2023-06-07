@@ -16,15 +16,14 @@ import LayerSettingsManager from "./Components/LayerSettingsManager";
 import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import Header from "./Components/Header";
 import './App.css'
+import { useLayersSettings, useLayersSettingsDispatch } from "./Reducers/useLayersSettings";
 
-const defaultLayers = [
-  { id: "Background", min: 0, max: 255, noise: 0, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } },
-  { id: uniqueId("Layer "), min: 0,  max: 70, noise: 10, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
-  { id: uniqueId("Layer "), min: 65, max:187, noise: 20, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
-]
 
 function App() {
-  const [layersSettings, setLayersSettings] = useState<LayerSettingsData[]>(defaultLayers);
+  const layersSettings = useLayersSettings();
+      console.log(layersSettings);
+  const dispatch = useLayersSettingsDispatch();
+
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
@@ -112,37 +111,6 @@ function App() {
     ];
   }
 
-  function updateLayerSettings(newLayerSettings : LayerSettingsData) {
-    const newLayersSettings : LayerSettingsData[] = layersSettings.map(layerSettings => {
-      if(layerSettings.id === newLayerSettings.id) {
-        return newLayerSettings;
-      }
-      return layerSettings;
-    });
-    setLayersSettings(newLayersSettings);
-  }
-
-  function addNewLayerSettings() {
-    const newLayersSettings = [...layersSettings, createLayerSettings()];
-    setLayersSettings(newLayersSettings);
-  }
-
-  function createLayerSettings() {
-    return {
-      id: uniqueId("Layer "),
-      min: 0,
-      max: Math.floor(Math.random() * 255),
-      noise: 10,
-      alpha: 255,
-      color: sampleColor(),
-      position2D: { x:0, y: 0 }
-    };
-  }
-
-  function onChangeLayerSettings(newLayersSettings : LayerSettingsData[]) {
-    setLayersSettings(newLayersSettings);
-  }
-
   return (
     <div className="flex flex-col justify-center items-center md:p-5 p-2 gap-3">
       <div className="w-4/5 hidden">
@@ -176,12 +144,10 @@ function App() {
               }
             >
               <p>{`Number of layers : ${layersSettings.length}`}</p>
-              <button className="btn btn-primary" onClick={addNewLayerSettings}>Add a layer</button>
+              <button className="btn btn-primary" onClick={() => dispatch({ type: 'add' })}>Add a layer</button>
               <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
                 <LayerSettingsManager
-                  onChangeLayerSettings={onChangeLayerSettings}
                   layersSettings={layersSettings}
-                  updateLayerSettings={updateLayerSettings}
                 />
               </div>
             </CollapsibleCard>

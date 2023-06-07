@@ -5,22 +5,16 @@ import LayerSettings from "./LayerSettings";
 import { LayerSettingsData } from "../interfaces";
 import CollapsibleCard from "./CollapsibleCard";
 import CollapsibleCardManager from "./CollapsibleCardManager";
+import { useLayersSettingsDispatch } from "../Reducers/useLayersSettings";
 
 interface LayerSettingsManagerProps {
   layersSettings: LayerSettingsData[];
-  onChangeLayerSettings: (newLayerSettings: LayerSettingsData[]) => void;
-  updateLayerSettings: (newLayerSettings : LayerSettingsData) => void;
 }
 
-// due to props drilling collapsiblecardManager is not relevant here
-function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLayerSettings } : LayerSettingsManagerProps) {
+function LayerSettingsManager({ layersSettings } : LayerSettingsManagerProps) {
+  const dispatch = useLayersSettingsDispatch();
   const [backgroundLayer, ...otherLayers] = layersSettings;
   const [openIdCollabsibleCard, setIdOpenCollabsibleCard] = useState<string>(backgroundLayer.id);
-
-  function destroyLayer(layerSettingId: string) {
-    const newLayerSettings = layersSettings.filter((layerSettings) => layerSettingId !== layerSettings.id);
-    onChangeLayerSettings(newLayerSettings);
-  }
 
   return(
     <div className="flex flex-col gap-3">
@@ -40,13 +34,13 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
           <LayerSettings
             key={backgroundLayer.id}
             layerSettings={backgroundLayer}
-            onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
+            onChange={(newLayerSettings) => dispatch({ type: "update", newLayerSettings })}
           />
         </CollapsibleCard>
         {
           <SortableList
             items={otherLayers}
-            onChange={(otherLayers) => onChangeLayerSettings([backgroundLayer, ...otherLayers])}
+            onChange={(otherLayers) => dispatch({ type: "sort", newLayersSettings: [backgroundLayer, ...otherLayers]}) }
             renderItem={(item) => (
               <SortableList.Item id={item.id}>
                 <CollapsibleCard
@@ -59,7 +53,11 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
                         <span>{item.id}</span>
                         <div className={`w-6 h-6 rounded mx-1 my-1`} style={{background: item.color}}></div>
                       </div>
-                      <button className="btn btn-circle btn-outline-error btn-sm" onClick={() =>{destroyLayer(item.id)}} disabled={otherLayers.length === 1}>
+                      <button
+                        className="btn btn-circle btn-outline-error btn-sm"
+                        onClick={() =>{ dispatch({ type: "delete", id: item.id }) }}
+                        disabled={otherLayers.length === 1}
+                      >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                       </button>
                     </div>
@@ -68,7 +66,7 @@ function LayerSettingsManager({ layersSettings, onChangeLayerSettings, updateLay
                   <LayerSettings
                     key={item.id}
                     layerSettings={item}
-                    onChange={(newLayerSettings) => updateLayerSettings(newLayerSettings)}
+                    onChange={(newLayerSettings) => dispatch({ type: "update", newLayerSettings })}
                   />
                 </CollapsibleCard>
               </SortableList.Item>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { times, uniqueId } from "lodash";
+import {  uniqueId } from "lodash";
 import { useWindowSize } from "rooks";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "./tools";
 import Slider from "./Components/Slider";
@@ -18,10 +18,8 @@ import Header from "./Components/Header";
 import './App.css'
 import { useLayersSettings, useLayersSettingsDispatch } from "./Reducers/useLayersSettings";
 
-
 function App() {
   const layersSettings = useLayersSettings();
-      console.log(layersSettings);
   const dispatch = useLayersSettingsDispatch();
 
   const [layersBase64, setLayersBase64] = useState<string[]>([]);
@@ -144,7 +142,7 @@ function App() {
               }
             >
               <p>{`Number of layers : ${layersSettings.length}`}</p>
-              <button className="btn btn-primary" onClick={() => dispatch({ type: 'add' })}>Add a layer</button>
+              <button className="btn btn-primary" onClick={() => dispatch({ type: 'add', newId:  uniqueId("Layer ") })}>Add a layer</button>
               <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
                 <LayerSettingsManager
                   layersSettings={layersSettings}

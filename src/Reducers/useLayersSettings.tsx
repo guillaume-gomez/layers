@@ -12,7 +12,7 @@ const defaultLayers : LayerSettingsData[] = [
 type ActionName = 'add' | 'update' | 'delete';
 
 type Action =
- { type: 'add' } |
+ { type: 'add', newId: string } |
  { type: 'update', newLayerSettings: LayerSettingsData } |
  { type: 'delete', id: string } |
  { type: 'sort', newLayersSettings: LayerSettingsData[] }
@@ -35,7 +35,6 @@ interface LayersSettingsProviderProps {
 
 export function LayersSettingsProvider({ children } : LayersSettingsProviderProps ) {
     const [layersSettings, dispatch] = useReducer(layersSettingsReducer, defaultLayers);
-    console.log(layersSettings);
 
     return (
         <LayersSettingsContext.Provider value={layersSettings}>
@@ -46,10 +45,9 @@ export function LayersSettingsProvider({ children } : LayersSettingsProviderProp
    );
 }
 
-
-function createLayerSettings() {
-    return {
-      id: uniqueId("Layer "),
+function createLayerSettings(id: string) {
+   return {
+      id,
       min: 0,
       max: Math.floor(Math.random() * 255),
       noise: 10,
@@ -62,7 +60,7 @@ function createLayerSettings() {
 function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Action) : LayerSettingsData[] {
   switch (action.type) {
     case 'add': {
-      const result = [...layersSettings, createLayerSettings()];
+      const result = [...layersSettings, createLayerSettings(action.newId)];
       return result;
     }
     case 'update': {

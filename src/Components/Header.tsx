@@ -3,7 +3,7 @@ import Logo from "/logo.png";
 
 function Header() {
   return (
-    <div className="navbar bg-base-200 ">
+    <div className="navbar bg-base-200 rounded-xl">
     <div className="navbar-start gap-3">
       <img className="rounded-lg" src={Logo} width="64px" />
       <div className="text-xl font-bold">Layers</div>

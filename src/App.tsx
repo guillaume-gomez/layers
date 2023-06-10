@@ -15,6 +15,7 @@ import CollapsibleCardManager from "./Components/CollapsibleCardManager";
 import LayerSettingsManager from "./Components/LayerSettingsManager";
 import LayerSettingsInfo from "./Components/LayerSettingsInfo";
 import Header from "./Components/Header";
+import Footer from "./Components/Footer";
 import './App.css'
 import { useLayersSettings, useLayersSettingsDispatch } from "./Reducers/useLayersSettings";
 
@@ -183,7 +184,7 @@ function App() {
           </div>
         </div>
       </div>
-      <h1>Footer</h1>
+      <Footer />
     </div>
   )
 }

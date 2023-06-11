@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function Footer() {
   return (
-    <footer className="footer items-center p-2 bg-base-200 rounded-xl">
+    <footer className="flex w-full items-center justify-between p-2 bg-base-200 rounded-xl">
       <div className="items-center grid-flow-col">
         <p>2023 - Made by Guillaume Gomez</p>
       </div> 

@@ -57,6 +57,8 @@ function createLayerSettings(id: string) {
     };
   }
 
+
+
 function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Action) : LayerSettingsData[] {
   switch (action.type) {
     case 'add': {

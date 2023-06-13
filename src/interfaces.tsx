@@ -14,4 +14,10 @@ export interface LayerSettingsData {
   alpha: number;
   position2D: position2D;
 }
+
+export interface LayersBase64Data {
+  id: string;
+  layerBase64: string;
+}
+
 export type QualityType = "min" | "middle" | "max";

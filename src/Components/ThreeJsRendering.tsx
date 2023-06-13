@@ -3,10 +3,10 @@ import { Canvas } from '@react-three/fiber';
 import { CameraControls } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
-import { position2D } from "../interfaces";
+import { position2D, LayersBase64Data } from "../interfaces";
 
 interface ThreejsRenderingProps {
-  layers: string[];
+  layers: LayersBase64Data[];
   positions2d: position2D[];
   width: number;
   height: number;
@@ -37,6 +37,11 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
 
   const sizeOfLayersZ = layers.length * zOffset;
   const middleSizeOfLayersZ = sizeOfLayersZ / 2;
+
+  if(layers.length != positions2d.length) {
+    // in case of reconcilation of the two arrays is not yet
+    return <span className="loading loading-bars loading-lg"></span>;
+  }
 
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -75,7 +80,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
             positions2d.map((position2d, index) => {
               return <ThreeJsLayer
                         key={index}
-                        base64Texture={layers[index]}
+                        base64Texture={layers[index].layerBase64}
                         opacity={opacityLayer}
                         position={[position2d.x , position2d.y, -middleSizeOfLayersZ + (index  * zOffset)]}
                         /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/

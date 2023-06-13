@@ -4,7 +4,7 @@ import { useWindowSize } from "rooks";
 import { imageToGrayScaleCanvas, generateImageFromRange } from "../tools";
 import Slider from "./Slider";
 import ColorPicker from "./ColorPicker";
-import { RGBArray, LayerSettingsData, QualityType } from "../interfaces";
+import { RGBArray, LayerSettingsData, QualityType, LayersBase64Data } from "../interfaces";
 import UploadButton from "./UploadButton";
 import { sampleColor } from "./palette";
 import ThreeJSManager from "./ThreeJSManager";
@@ -15,11 +15,11 @@ import LayerSettingsManager from "./LayerSettingsManager";
 import LayerSettingsInfo from "./LayerSettingsInfo";
 import { useLayersSettings, useLayersSettingsDispatch } from "../Reducers/useLayersSettings";
 
+
 function MainContent() {
   const layersSettings = useLayersSettings();
   const dispatch = useLayersSettingsDispatch();
-
-  const [layersBase64, setLayersBase64] = useState<string[]>([]);
+  const [layersBase64, setLayersBase64] = useState<LayersBase64Data[]>([]);
   const [loadedImage, setLoadedImage] = useState<boolean>(false);
   const [is2D, setIs2D] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(380);
@@ -77,8 +77,8 @@ function MainContent() {
     if(!canvasRef.current) {
       return;
     }
-    const listOfCanvasBase64  = layersSettings.map( ({min, max, noise, alpha, color}, index) => {
-      return generateImageFromRange(
+    const listOfCanvasBase64  = layersSettings.map( ({id, min, max, noise, alpha, color}, index) => {
+      const layerBase64 = generateImageFromRange(
         canvasRef!.current!,
         {
           min,
@@ -87,6 +87,7 @@ function MainContent() {
           color: hexToRGB(color, alpha)
         }
       );
+      return { id, layerBase64 }
     });
     setLayersBase64(listOfCanvasBase64);
   }

@@ -1,6 +1,6 @@
 import React, { useRef , useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { CameraControls } from '@react-three/drei';
+import { CameraControls, PresentationControls } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
@@ -18,7 +18,6 @@ interface ThreejsRenderingProps {
 
 function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zCamera, zOffset = 0.1, opacityLayer = 0.9 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cameraControlRef = useRef<any>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
 
   function colorToSigned24Bit(stringColor: string) : number {
@@ -36,7 +35,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   }
 
   const sizeOfLayersZ = layers.length * zOffset;
-  const middleSizeOfLayersZ = sizeOfLayersZ / 2;
+  const middleSizeOfLayersZ = sizeOfLayersZ;
 
   if(layers.length != positions2d.length) {
     // in case of reconcilation of the two arrays is not yet
@@ -45,14 +44,6 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
 
   return (
     <div className="flex flex-col gap-5 w-full">
-      <button
-          type="button"
-          onClick={() => {
-            cameraControlRef.current?.rotate(Math.PI / 4, 0, true);
-          }}
-        >
-          Rotate 45% on X
-        </button>
       <Canvas
         camera={{ position: [0, 0.0, 1], fov: 75, far: 10 }}
         dpr={window.devicePixelRatio}
@@ -68,26 +59,33 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
         <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xe1d014} />
         <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xe1d014} />
 
-        <CameraControls makeDefault ref={cameraControlRef} />
-
-        <group
-          position={[
-            0
-            ,0,
-            0]}
+        <PresentationControls
+          snap
+          global
+          zoom={0.5}
+          rotation={[0, 0, 0]}
+          polar={[-Math.PI/ 8, Math.PI / 4]}
+          azimuth={[-Math.PI, Math.PI]}
         >
-          {
-            positions2d.map((position2d, index) => {
-              return <ThreeJsLayer
-                        key={index}
-                        base64Texture={layers[index].layerBase64}
-                        opacity={opacityLayer}
-                        position={[position2d.x , position2d.y, -middleSizeOfLayersZ + (index  * zOffset)]}
-                        /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
-                     />
-            })
-          }
-        </group>
+          <group
+            position={[
+              0
+              ,0,
+              0]}
+          >
+            {
+              positions2d.map((position2d, index) => {
+                return <ThreeJsLayer
+                          key={index}
+                          base64Texture={layers[index].layerBase64}
+                          opacity={opacityLayer}
+                          position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
+                          /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
+                       />
+              })
+            }
+          </group>
+        </PresentationControls>
       </Canvas>
       <ul className="text-xs">
         <li>Double click to switch to fullscreen</li>

@@ -35,7 +35,6 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   }
 
   const sizeOfLayersZ = layers.length * zOffset;
-  const middleSizeOfLayersZ = sizeOfLayersZ;
 
   if(layers.length != positions2d.length) {
     // in case of reconcilation of the two arrays is not yet
@@ -80,7 +79,6 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
                           base64Texture={layers[index].layerBase64}
                           opacity={opacityLayer}
                           position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
-                          /*meshProps={{position:[0 ,0, -middleSizeOfLayersZ + (index  * zOffset)]}}*/
                        />
               })
             }

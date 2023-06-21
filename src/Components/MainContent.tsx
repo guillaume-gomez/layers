@@ -13,6 +13,7 @@ import CollapsibleCard from "./CollapsibleCard";
 import CollapsibleCardManager from "./CollapsibleCardManager";
 import LayerSettingsManager from "./LayerSettingsManager";
 import LayerSettingsInfo from "./LayerSettingsInfo";
+import { SelectedLayerProvider } from "../Reducers/useSelectedLayersSettings";
 import { useLayersSettings, useLayersSettingsDispatch } from "../Reducers/useLayersSettings";
 
 
@@ -108,74 +109,76 @@ function MainContent() {
   }
 
   return (
-    <div className="w-full flex md:flex-row flex-col gap-3">
-      <div className="settings card bg-base-200" style={{ minWidth: 325 }}>
-        <div className="card-body p-2">
-          <div className="card-title">Settings</div>
-          <CollapsibleCardManager>
-          <CollapsibleCard header="General Settings" collapse={true}>
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={quality}
-              onChange={(e) => setQuality(e.target.value as QualityType)}
+    <SelectedLayerProvider>
+      <div className="w-full flex md:flex-row flex-col gap-3">
+        <div className="settings card bg-base-200" style={{ minWidth: 325 }}>
+          <div className="card-body p-2">
+            <div className="card-title">Settings</div>
+            <CollapsibleCardManager>
+            <CollapsibleCard header="General Settings" collapse={true}>
+              <select
+                className="select select-bordered w-full max-w-xs"
+                value={quality}
+                onChange={(e) => setQuality(e.target.value as QualityType)}
+              >
+                <option disabled selected>Quality of result</option>
+                <option value="min">Min</option>
+                <option value="middle">Middle</option>
+                <option value="max">Max</option>
+              </select>
+              <UploadButton onChange={loadImage} />
+            </CollapsibleCard>
+            <CollapsibleCard
+              header={
+                <div className="flex items-center gap-2">
+                  <span>Layers settings</span>
+                  <LayerSettingsInfo />
+                </div>
+              }
             >
-              <option disabled selected>Quality of result</option>
-              <option value="min">Min</option>
-              <option value="middle">Middle</option>
-              <option value="max">Max</option>
-            </select>
-            <UploadButton onChange={loadImage} />
-          </CollapsibleCard>
-          <CollapsibleCard
-            header={
-              <div className="flex items-center gap-2">
-                <span>Layers settings</span>
-                <LayerSettingsInfo />
+              <p>{`Number of layers : ${layersSettings.length}`}</p>
+              <button className="btn btn-primary" onClick={() => dispatch({ type: 'add', newId:  uniqueId("Layer ") })}>Add a layer</button>
+              <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
+                <LayerSettingsManager
+                  layersSettings={layersSettings}
+                />
               </div>
-            }
-          >
-            <p>{`Number of layers : ${layersSettings.length}`}</p>
-            <button className="btn btn-primary" onClick={() => dispatch({ type: 'add', newId:  uniqueId("Layer ") })}>Add a layer</button>
-            <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
-              <LayerSettingsManager
-                layersSettings={layersSettings}
-              />
+            </CollapsibleCard>
+            </CollapsibleCardManager>
+          </div>
+        </div>
+        <div className="render card bg-base-200 w-full" ref={resultDivRef}>
+          <div className="card-body p-2">
+            <div className="card-title">Renderer</div>
+            <img ref={imageRef} className="hidden"/>
+            <canvas ref={canvasRef} className="hidden" />
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <span className="label-text">2D</span>
+                <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
+              </label>
             </div>
-          </CollapsibleCard>
-          </CollapsibleCardManager>
-        </div>
-      </div>
-      <div className="render card bg-base-200 w-full" ref={resultDivRef}>
-        <div className="card-body p-2">
-          <div className="card-title">Renderer</div>
-          <img ref={imageRef} className="hidden"/>
-          <canvas ref={canvasRef} className="hidden" />
-          <div className="form-control">
-            <label className="label cursor-pointer">
-              <span className="label-text">2D</span>
-              <input type="checkbox" className="toggle" checked={is2D} onChange={() => setIs2D(!is2D)} />
-            </label>
-          </div>
-          <div ref={resultRef}>
-            {
-              is2D ?
-                  <Canvas2DManager
-                    layers={layersBase64}
-                    width={canvasRef?.current?.width || width}
-                    height={canvasRef?.current?.height || height}
-                  />
-                :
-                  <ThreeJSManager
-                    layers={layersBase64}
-                    positions2d={layersSettings.map(layerSetting => layerSetting.position2D)}
-                    width={width}
-                    height={height}
-                  />
-            }
+            <div ref={resultRef}>
+              {
+                is2D ?
+                    <Canvas2DManager
+                      layers={layersBase64}
+                      width={canvasRef?.current?.width || width}
+                      height={canvasRef?.current?.height || height}
+                    />
+                  :
+                    <ThreeJSManager
+                      layers={layersBase64}
+                      positions2d={layersSettings.map(layerSetting => layerSetting.position2D)}
+                      width={width}
+                      height={height}
+                    />
+              }
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </SelectedLayerProvider>
   )
 }
 

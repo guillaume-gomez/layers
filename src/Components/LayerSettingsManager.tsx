@@ -6,6 +6,7 @@ import { LayerSettingsData } from "../interfaces";
 import CollapsibleCard from "./CollapsibleCard";
 import CollapsibleCardManager from "./CollapsibleCardManager";
 import { useLayersSettingsDispatch } from "../Reducers/useLayersSettings";
+import { useSelectedLayer, useSelectedLayerDispatch } from "../Reducers/useSelectedLayersSettings";
 
 interface LayerSettingsManagerProps {
   layersSettings: LayerSettingsData[];
@@ -13,15 +14,18 @@ interface LayerSettingsManagerProps {
 
 function LayerSettingsManager({ layersSettings } : LayerSettingsManagerProps) {
   const dispatch = useLayersSettingsDispatch();
+  const { selectedLayer } = useSelectedLayer();
+  const dispatchSelectedLayer = useSelectedLayerDispatch();
   const [backgroundLayer, ...otherLayers] = layersSettings;
+
   const [openIdCollabsibleCard, setIdOpenCollabsibleCard] = useState<string>(backgroundLayer.id);
 
   return(
     <div className="flex flex-col gap-3">
         <CollapsibleCard
           key={backgroundLayer.id}
-          collapse={backgroundLayer.id !== openIdCollabsibleCard}
-          toggle={() => setIdOpenCollabsibleCard(backgroundLayer.id) }
+          collapse={backgroundLayer.id !== selectedLayer}
+          toggle={() => dispatchSelectedLayer({type: 'selected', id: backgroundLayer.id}) }
           header={
             <div className="flex flex-wrap items-center w-full justify-between">
               <span>{backgroundLayer.id}</span>
@@ -45,8 +49,8 @@ function LayerSettingsManager({ layersSettings } : LayerSettingsManagerProps) {
               <SortableList.Item id={item.id}>
                 <CollapsibleCard
                   key={item.id}
-                  collapse={item.id !== openIdCollabsibleCard}
-                  toggle={ () => setIdOpenCollabsibleCard(item.id) }
+                  collapse={item.id !== selectedLayer}
+                  toggle={ () => dispatchSelectedLayer({type: 'selected', id: item.id}) }
                   header={
                     <div className="flex flex-wrap items-center w-full justify-between">
                       <div className="flex items-center">

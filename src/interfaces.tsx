@@ -13,6 +13,7 @@ export interface LayerSettingsData {
   noise: number;
   alpha: number;
   position2D: position2D;
+  needUpdate: boolean;
 }
 
 export interface LayersBase64Data {

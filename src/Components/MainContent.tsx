@@ -7,6 +7,7 @@ import ColorPicker from "./ColorPicker";
 import { RGBArray, LayerSettingsData, QualityType, LayersBase64Data } from "../interfaces";
 import UploadButton from "./UploadButton";
 import { sampleColor } from "./palette";
+import { hexToRGB } from "../colorConverterTools";
 import ThreeJSManager from "./ThreeJSManager";
 import Canvas2DManager from "./Canvas2DManager";
 import CollapsibleCard from "./CollapsibleCard";
@@ -39,10 +40,15 @@ function MainContent() {
     limitSize();
   }, [innerHeight, innerWidth])
 
+  useEffect(() => {
+    dispatch({type: "force-update"});
+  }, [loadedImage]);
 
   useEffect(() => {
-    generateImagesFromLayers();
-  },[layersSettings, loadedImage]);
+    if(layersSettings.find(layerSettings => layerSettings.needUpdate === true)) {
+      generateImagesFromLayers();
+    }
+  },[layersSettings]);
 
   useEffect(() => {
     if(imageRef.current && imageRef.current.width > 0 && canvasRef.current) {
@@ -78,34 +84,29 @@ function MainContent() {
     if(!canvasRef.current) {
       return;
     }
-    const listOfCanvasBase64  = layersSettings.map( ({id, min, max, noise, alpha, color}, index) => {
-      const layerBase64 = generateImageFromRange(
-        canvasRef!.current!,
-        {
-          min,
-          max,
-          noise,
-          color: hexToRGB(color, alpha)
-        }
-      );
-      return { id, layerBase64 }
+
+    const listOfCanvasBase64 : LayersBase64Data[] = layersSettings.map( (layerSettings, index) => {
+      if(layerSettings.needUpdate) {
+        const { id, min, max, noise, color, alpha} = layerSettings
+
+        const layerBase64 = generateImageFromRange(
+          canvasRef!.current!,
+          {
+            min,
+            max,
+            noise,
+            color: hexToRGB(color, alpha)
+          }
+        );
+
+        return { id, layerBase64 }
+      } else {
+        return layersBase64[index];
+      }
     });
+
     setLayersBase64(listOfCanvasBase64);
-  }
-
-  function hexToRGB(hexColor: string, alpha: number) : RGBArray {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
-
-    function hexToDec(hex: string) {
-      return parseInt(hex, 16);
-    }
-
-    return [
-      hexToDec(result![1]),
-      hexToDec(result![2]),
-      hexToDec(result![3]),
-      alpha
-    ];
+    dispatch({type: 'clear-cache'})
   }
 
   return (
@@ -137,7 +138,13 @@ function MainContent() {
               }
             >
               <p>{`Number of layers : ${layersSettings.length}`}</p>
-              <button className="btn btn-primary" onClick={() => dispatch({ type: 'add', newId:  uniqueId("Layer ") })}>Add a layer</button>
+              <button
+                disabled={layersSettings.length > 10}
+                className="btn btn-primary"
+                onClick={() => dispatch({ type: 'add', newId:  uniqueId("Layer ") })}
+              >
+                Add a layer
+              </button>
               <div className="flex flex-col gap-2 bg-base-300 py-3 px-2">
                 <LayerSettingsManager
                   layersSettings={layersSettings}

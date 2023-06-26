@@ -3,10 +3,10 @@ import * as THREE from 'three';
 import ThreeJsRendering from "./ThreeJsRendering";
 import ColorPicker from "./ColorPicker";
 import Slider from "./Slider";
-import { position2D } from "../interfaces";
+import { position2D, LayersBase64Data } from "../interfaces";
 
 interface ThreeJSManagerProps {
-  layers: string[];
+  layers: LayersBase64Data[];
   positions2d: position2D[];
   width: number;
   height: number;

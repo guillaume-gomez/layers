@@ -4,18 +4,20 @@ import { LayerSettingsData } from "../interfaces";
 import { sampleColor } from "../Components/palette";
 
 const defaultLayers : LayerSettingsData[] = [
-  { id: "Background", min: 0, max: 255, noise: 0, alpha: 255, color:"#000000", position2D: { x:0, y: 0 } },
-  { id: uniqueId("Layer "), min: 0,  max: 70, noise: 10, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 } },
-  { id: uniqueId("Layer "), min: 65, max:187, noise: 20, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 } }
+  { id: "Background", min: 0, max: 255, noise: 0, alpha: 255, color:"#000000", position2D: { x:0, y: 0 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 0,  max: 70, noise: 10, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 65, max:187, noise: 20, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 }, needUpdate: true }
 ];
 
-type ActionName = 'add' | 'update' | 'delete';
+type ActionName = 'add' | 'update' | 'delete' | 'clear-cache' | 'force-update';
 
 type Action =
  { type: 'add', newId: string } |
  { type: 'update', newLayerSettings: LayerSettingsData } |
  { type: 'delete', id: string } |
- { type: 'sort', newLayersSettings: LayerSettingsData[] }
+ { type: 'sort', newLayersSettings: LayerSettingsData[] } |
+ { type: 'clear-cache' } |
+ { type: 'force-update'}
 ;
 
 const LayersSettingsContext = createContext<LayerSettingsData[]>([]);
@@ -53,10 +55,10 @@ function createLayerSettings(id: string) {
       noise: 10,
       alpha: 255,
       color: sampleColor(),
-      position2D: { x:0, y: 0 }
+      position2D: { x:0, y: 0 },
+      needUpdate: true
     };
   }
-
 
 
 function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Action) : LayerSettingsData[] {
@@ -69,7 +71,7 @@ function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Ac
       const { newLayerSettings } = action;
       return layersSettings.map(layerSettings => {
         if(layerSettings.id === newLayerSettings.id) {
-          return newLayerSettings;
+          return { ...newLayerSettings, needUpdate: true };
         }
         return layerSettings;
       });
@@ -79,6 +81,12 @@ function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Ac
     }
     case 'delete': {
       return layersSettings.filter((layerSettings) => action.id !== layerSettings.id);
+    }
+    case 'clear-cache': {
+      return layersSettings.map(layerSettings => ({...layerSettings, needUpdate: false }));
+    }
+    case 'force-update': {
+      return layersSettings.map(layerSettings => ({...layerSettings, needUpdate: true }));
     }
   }
 }

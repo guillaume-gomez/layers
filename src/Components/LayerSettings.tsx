@@ -94,8 +94,8 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
             label="X axis"
             onChange={(value) => handleChangeX(value)}
             value={layerSettings.position2D.x}
-            min={-1}
-            max={1}
+            min={-0.5}
+            max={0.5}
             float
             step={0.001}
           />
@@ -103,8 +103,8 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
             label="Y Axis"
             onChange={(value) => handleChangeY(value)}
             value={layerSettings.position2D.y}
-            min={-1}
-            max={1}
+            min={-0.5}
+            max={0.5}
             float
             step={0.001}
           />

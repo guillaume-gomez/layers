@@ -139,7 +139,7 @@ function MainContent() {
             >
               <p>{`Number of layers : ${layersSettings.length}`}</p>
               <button
-                disabled={layersSettings.length > 10}
+                disabled={layersSettings.length >= 20}
                 className="btn btn-primary"
                 onClick={() => dispatch({ type: 'add', newId:  uniqueId("Layer ") })}
               >

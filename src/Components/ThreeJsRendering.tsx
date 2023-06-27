@@ -1,6 +1,6 @@
-import React, { useRef , useMemo } from 'react';
+import React, { useRef , useMemo, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { CameraControls, PresentationControls } from '@react-three/drei';
+import { CameraControls, PresentationControls, Stats, AsciiRenderer, Grid } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
@@ -19,6 +19,12 @@ interface ThreejsRenderingProps {
 function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zCamera, zOffset = 0.1, opacityLayer = 0.9 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
+  const [fakeSelectedLayer, setFakeSelectedLayer] = useState<number>(0);
+
+  useEffect(() => {
+    const fakeSelected = Math.ceil(Math.random() * layers.length);
+    setFakeSelectedLayer(fakeSelected);
+  }, [layers, setFakeSelectedLayer])
 
   function colorToSigned24Bit(stringColor: string) : number {
     return (parseInt(stringColor.substr(1), 16) << 8) / 256;
@@ -50,13 +56,21 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
         ref={canvasRef}
         style={{width, height}}
       >
+
+        { 
+          import.meta.env.MODE === "development" ? 
+          <>
+          <Stats showPanel={0} /> 
+          <Grid sectionColor={0x987654} cellSize={1} args={[10, 10]} />
+          </> : <></>
+        }
         <color attach="background" args={[colorToSigned24Bit(backgroundColor)]} />
 
-        <pointLight position={[0, 0, 10]} intensity={1.5} color={0xDDDDDD}/>
-        <pointLight position={[0, 0, -10]} intensity={0.5}  color={0xDDDDDD} />
+        <pointLight position={[0, 0, 10]} intensity={1.5} color={0xAAAADD}/>
+        <pointLight position={[0, 0, -10]} intensity={0.5}  color={0xDDAAAA} />
 
-        <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xe1d014} />
-        <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xe1d014} />
+        <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xFFFFFF} />
+        <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xFFFFFF} />
 
         <PresentationControls
           snap
@@ -79,11 +93,13 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
                           base64Texture={layers[index].layerBase64}
                           opacity={opacityLayer}
                           position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
+                          isSelected={index === fakeSelectedLayer}
                        />
               })
             }
           </group>
         </PresentationControls>
+        { /* <AsciiRenderer fgColor="white" bgColor="black" /> */}
       </Canvas>
       <ul className="text-xs">
         <li>Double click to switch to fullscreen</li>

@@ -6,7 +6,7 @@ import { sampleColor } from "../Components/palette";
 const defaultLayers : LayerSettingsData[] = [
   { id: "Background", min: 0, max: 255, noise: 0, alpha: 255, color:"#000000", position2D: { x:0, y: 0 }, needUpdate: true },
   { id: uniqueId("Layer "), min: 0,  max: 70, noise: 10, alpha: 125, color:"#ff0059", position2D: { x:0, y: 0 }, needUpdate: true },
-  { id: uniqueId("Layer "), min: 65, max:187, noise: 20, alpha: 90, color: "#168D16", position2D: { x:0, y: 0 }, needUpdate: true }
+  { id: uniqueId("Layer "), min: 65, max:187, noise: 20, alpha: 150, color: "#168D16", position2D: { x:0, y: 0 }, needUpdate: true }
 ];
 
 type ActionName = 'add' | 'update' | 'delete' | 'clear-cache' | 'force-update';
@@ -80,7 +80,8 @@ function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Ac
       return action.newLayersSettings;
     }
     case 'delete': {
-      return layersSettings.filter((layerSettings) => action.id !== layerSettings.id);
+      const remaininglayersSettings = layersSettings.filter((layerSettings) => action.id !== layerSettings.id);
+      return remaininglayersSettings.map((layerSettings) => ({ ...layerSettings, needUpdate: true }));
     }
     case 'clear-cache': {
       return layersSettings.map(layerSettings => ({...layerSettings, needUpdate: false }));

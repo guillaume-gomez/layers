@@ -86,7 +86,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
           >
             <Selection>
               <EffectComposer multisampling={8} autoClear={false}>
-                <Outline blur visibleEdgeColor={0xffffff} hiddenEdgeColor={0x22090a} edgeStrength={100}/>
+                <Outline blur visibleEdgeColor={0xffffff} hiddenEdgeColor={0x22090a} edgeStrength={100} pulseSpeed={0.8} />
               </EffectComposer>
               {
                 positions2d.map((position2d, index) => {

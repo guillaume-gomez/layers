@@ -1,8 +1,10 @@
 import * as THREE from 'three'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { useSpring, animated, Globals } from '@react-spring/three';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ThreeElements, useLoader } from '@react-three/fiber';
+import {  Select } from '@react-three/postprocessing'
+
 
 Globals.assign({
   frameLoop: "always",
@@ -18,8 +20,8 @@ interface ThreeJsStripeProps {
 
 
 function ThreeJsLayer({meshProps, base64Texture, position, opacity = 0.9, isSelected = false }: ThreeJsStripeProps) {
+  const [hovered, setHovered] = useState<boolean>(false);
   const [{ x, y, z }] = useSpring(() => ({ to: { x: position[0] + 0, y: position[1] + 0, z: position[2] + 0.1 } }), [position]);
-  const [{ scaleX }] = useSpring(() =>  ({ to: { scaleX: isSelected ? 2 : 1}}), [isSelected]);
 
 
   const mesh = useRef<THREE.Mesh>(null!);
@@ -32,17 +34,21 @@ function ThreeJsLayer({meshProps, base64Texture, position, opacity = 0.9, isSele
   }
 
   return (
-    <animated.mesh
-      position-x={x}
-      position-y={y}
-      position-z={z}
-      ref={mesh}
-      scale-x={scaleX}
-      /*{...meshProps}*/
-    >
-      <boxGeometry args={[1, 1, 0.1]} />
-      <meshPhongMaterial map={texture} opacity={opacity} transparent shininess={80}/>
-    </animated.mesh>
+    <Select enabled={hovered || isSelected}>
+      <animated.mesh
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+
+        position-x={x}
+        position-y={y}
+        position-z={z}
+        ref={mesh}
+        /*{...meshProps}*/
+      >
+        <boxGeometry args={[1, 1, 0.1]} />
+        <meshPhongMaterial map={texture} opacity={opacity} transparent shininess={80}/>
+      </animated.mesh>
+    </Select>
   )
 }
 

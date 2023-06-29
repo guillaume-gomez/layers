@@ -13,7 +13,7 @@ interface ThreeJSManagerProps {
 }
 
 function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerProps) {
-  const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#000000");
+  const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#B8C7C4");
   const [zOffset, setZOffset] = useState<number>(0.2);
   const [opacityLayer, setOpacityLayer] = useState<number>(0.9);
   const [zCamera, setZCamera] = useState<number>(1);
@@ -28,7 +28,7 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         float
         step={0.01}
         min={0.1}
-        max={3}
+        max={1}
       />
       <Slider
         label="Opacity of a Layer"

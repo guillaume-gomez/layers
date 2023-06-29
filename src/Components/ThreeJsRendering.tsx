@@ -1,9 +1,12 @@
 import React, { useRef , useMemo, useState, useEffect } from 'react';
+import { Selection, EffectComposer, Outline } from '@react-three/postprocessing'
 import { Canvas } from '@react-three/fiber';
 import { CameraControls, PresentationControls, Stats, AsciiRenderer, Grid } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
+import { useSelectedLayer } from "../Reducers/useSelectedLayersSettings";
+
 
 interface ThreejsRenderingProps {
   layers: LayersBase64Data[];
@@ -19,12 +22,7 @@ interface ThreejsRenderingProps {
 function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zCamera, zOffset = 0.1, opacityLayer = 0.9 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
-  const [fakeSelectedLayer, setFakeSelectedLayer] = useState<number>(0);
-
-  useEffect(() => {
-    const fakeSelected = Math.ceil(Math.random() * layers.length);
-    setFakeSelectedLayer(fakeSelected);
-  }, [layers, setFakeSelectedLayer])
+  const { selectedLayer } = useSelectedLayer();
 
   function colorToSigned24Bit(stringColor: string) : number {
     return (parseInt(stringColor.substr(1), 16) << 8) / 256;
@@ -86,17 +84,22 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
               ,0,
               0]}
           >
-            {
-              positions2d.map((position2d, index) => {
-                return <ThreeJsLayer
-                          key={index}
-                          base64Texture={layers[index].layerBase64}
-                          opacity={opacityLayer}
-                          position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
-                          isSelected={index === fakeSelectedLayer}
-                       />
-              })
-            }
+            <Selection>
+              <EffectComposer multisampling={8} autoClear={false}>
+                <Outline blur visibleEdgeColor={0xffffff} hiddenEdgeColor={0x22090a} edgeStrength={100}/>
+              </EffectComposer>
+              {
+                positions2d.map((position2d, index) => {
+                  return <ThreeJsLayer
+                            key={index}
+                            base64Texture={layers[index].layerBase64}
+                            opacity={opacityLayer}
+                            position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
+                            isSelected={layers[index].id === selectedLayer}
+                         />
+                })
+              }
+            </Selection>
           </group>
         </PresentationControls>
         { /* <AsciiRenderer fgColor="white" bgColor="black" /> */}

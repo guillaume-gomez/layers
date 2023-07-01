@@ -1,6 +1,6 @@
 import React, { useRef , useMemo, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { CameraControls, PresentationControls, Stats, AsciiRenderer, Grid } from '@react-three/drei';
+import { CameraControls, PresentationControls, Stats, AsciiRenderer, Grid, Stage, Backdrop } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
@@ -71,7 +71,6 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
 
         <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xFFFFFF} />
         <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xFFFFFF} />
-
         <PresentationControls
           snap
           global
@@ -80,6 +79,16 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
           polar={[-Math.PI/ 8, Math.PI / 4]}
           azimuth={[-Math.PI, Math.PI]}
         >
+
+            <Backdrop
+              floor={1} // Stretches the floor segment, 0.25 by default
+              segments={20} // Mesh-resolution, 20 by default
+              receiveShadow={true}
+              position={[0,-0.6,-1]}
+              scale={[2,1,1]}
+            >
+                <meshStandardMaterial color="#FFFFFF" />
+            </Backdrop>
           <group
             position={[
               0

@@ -1,6 +1,6 @@
 import React, { useRef , useMemo, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { CameraControls, PresentationControls, Stats, AsciiRenderer, ContactShadows,  Grid, Stage, Backdrop, Lightformer } from '@react-three/drei';
+import { CameraControls, PresentationControls, Stats, AsciiRenderer, ContactShadows,  Grid, Stage, Backdrop, Lightformer, Float } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
@@ -76,16 +76,16 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
 
 
         <hemisphereLight intensity={0.5} />
-      <ContactShadows resolution={1024} frames={1} position={[0, -1.16, 0]} scale={15} blur={0.5} opacity={1} far={20} />
-      <mesh scale={4} position={[3, -1.161, -1.5]} rotation={[-Math.PI / 2, 0, Math.PI / 2.5]}>
-        <ringGeometry args={[0.9, 1, 4, 1]} />
-        <meshStandardMaterial color="white" roughness={0.75} />
-      </mesh>
-      <mesh scale={4} position={[-3, -1.161, -1]} rotation={[-Math.PI / 2, 0, Math.PI / 2.5]}>
-        <ringGeometry args={[0.9, 1, 3, 1]} />
-        <meshStandardMaterial color="white" roughness={0.75} />
-      </mesh>
-      <Lightformer intensity={2} rotation-y={Math.PI / 2} position={[-30, 2, 0]} scale={[100, 2, 1]} />
+        <ContactShadows resolution={1024} frames={1} position={[0, -1.16, 0]} scale={15} blur={0.5} opacity={1} far={20} />
+        <mesh scale={4} position={[3, -1.161, -1.5]} rotation={[-Math.PI / 2, 0, Math.PI / 2.5]}>
+          <ringGeometry args={[0.9, 1, 4, 1]} />
+          <meshStandardMaterial color="blue" roughness={0.75} />
+        </mesh>
+        <mesh scale={4} position={[-3, -1.161, -1]} rotation={[-Math.PI / 2, 0, Math.PI / 2.5]}>
+          <ringGeometry args={[0.9, 1, 3, 1]} />
+          <meshStandardMaterial color="white" roughness={0.75} />
+        </mesh>
+        <Lightformer intensity={2} rotation-y={Math.PI / 2} position={[-30, 2, 0]} scale={[100, 2, 1]} />
         <Lightformer intensity={2} rotation-y={-Math.PI / 2} position={[30, 2, 0]} scale={[100, 2, 1]} />
         {/* Key */}
         <Lightformer form="ring" color="red" intensity={10} scale={2} position={[10, 10, 10]} onUpdate={(self) => self.lookAt(0, 0, 0)} />
@@ -107,25 +107,27 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
             >
                 <meshStandardMaterial color="#FFFFFF" />
             </Backdrop>*/}
-          <group
-            position={[
-              0
-              ,0,
-              0]}
-          >
-              <Ground />
-            {
-              positions2d.map((position2d, index) => {
-                return <ThreeJsLayer
-                          key={index}
-                          base64Texture={layers[index].layerBase64}
-                          opacity={opacityLayer}
-                          position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
-                          isSelected={index === fakeSelectedLayer}
-                       />
-              })
-            }
-          </group>
+          <Float position={[0, 0, 0]} speed={2} rotationIntensity={2} floatIntensity={2}>
+            <group
+              position={[
+                0
+                ,0,
+                0]}
+            >
+              {/*<Ground /> */}
+              {
+                positions2d.map((position2d, index) => {
+                  return <ThreeJsLayer
+                            key={index}
+                            base64Texture={layers[index].layerBase64}
+                            opacity={opacityLayer}
+                            position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
+                            isSelected={index === fakeSelectedLayer}
+                         />
+                })
+              }
+            </group>
+          </Float>
         </PresentationControls>
         { /* <AsciiRenderer fgColor="white" bgColor="black" /> */}
       </Canvas>

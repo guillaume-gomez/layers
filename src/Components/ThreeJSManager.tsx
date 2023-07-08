@@ -13,7 +13,7 @@ interface ThreeJSManagerProps {
 }
 
 function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerProps) {
-  const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#B8C7C4");
+  const [backgroundColor3D, setBackgroundColor3D] = useState<string>("#000000");
   const [zOffset, setZOffset] = useState<number>(0.2);
   const [opacityLayer, setOpacityLayer] = useState<number>(0.9);
   const [zCamera, setZCamera] = useState<number>(1);

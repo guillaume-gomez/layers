@@ -28,9 +28,9 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         float
         step={0.01}
         min={0.1}
-        max={3}
+        max={0.8}
       />
-      <Slider
+      {/*<Slider
         label="Opacity of a Layer"
         onChange={(value) => setOpacityLayer(value)}
         value={opacityLayer}
@@ -47,7 +47,7 @@ function ThreeJSManager({ layers, width, height, positions2d }: ThreeJSManagerPr
         step={0.01}
         min={1}
         max={10}
-      />
+      />*/}
       <ThreeJsRendering
         layers={layers}
         width={width}

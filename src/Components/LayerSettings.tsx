@@ -45,6 +45,10 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
     throttleOnChange({ ...layerSettings, position2D:{ ...layerSettings.position2D, y: value }});
   }
 
+  function handleResetCoords() {
+    throttleOnChange({ ...layerSettings, position2D:{ x: 0, y: 0 }});
+  }
+
   function renderTab() {
     switch(selectedTab) {
       case "color":
@@ -108,6 +112,9 @@ function LayerSettings({ onChange, layerSettings } : LayerSettingsInterface) {
             float
             step={0.001}
           />
+            <button className="btn btn-secondary btn-xs" onClick={handleResetCoords}>
+              reset
+            </button>
           </>
         );
     };

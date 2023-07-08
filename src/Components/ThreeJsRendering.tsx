@@ -10,17 +10,14 @@ import {
   Stage,
   Lightformer,
   Environment,
-  Float,
+  Float
 } from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
-<<<<<<< HEAD
 import { useSelectedLayer } from "../Reducers/useSelectedLayersSettings";
-=======
 import Ground from "./Ground";
 import Striplight from "./Striplight";
->>>>>>> main
 
 
 interface ThreejsRenderingProps {
@@ -40,14 +37,40 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
   const { selectedLayer } = useSelectedLayer();
 
+  const sizeOfLayersZMiddle = layers.length * zOffset / 2;
+
   useEffect(() => {
     if(cameraControlRef && cameraControlRef.current) {
       cameraControlRef.current.dollyTo(+(1.1) + (layers.length * (zOffset / 2)) , true);
     }
-  }, [layers.length, zOffset])
+  }, [layers.length, zOffset]);
+
+  useEffect(() => {
+    if(cameraControlRef && cameraControlRef.current) {
+      const layerIndex = layers.findIndex(layer => layer.id === selectedLayer);
+      if(layerIndex !== -1) {
+        const offsetToSeeTheLayer = 0.5;
+        cameraControlRef.current.setLookAt(
+          -1,0, sizeOfLayersZMiddle + (layerIndex  * zOffset) + offsetToSeeTheLayer,
+          -1, 0.0, offsetToSeeTheLayer,
+          true
+        );
+      } else {
+        recenterCamera(cameraControlRef.current);
+      }
+    }
+  }, [selectedLayer]);
 
   function colorToSigned24Bit(stringColor: string) : number {
     return (parseInt(stringColor.substr(1), 16) << 8) / 256;
+  }
+
+  function recenterCamera(cameraControl : CameraControls) {
+    cameraControl.setLookAt(
+          0, 0, 1.1,
+          0,0, 0,
+          true
+        );
   }
 
   // before layers are cut
@@ -60,7 +83,6 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
     );
   }
 
-  const sizeOfLayersZMiddle = layers.length * zOffset / 2;
 
 
   return (
@@ -72,8 +94,6 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
         ref={canvasRef}
         style={{width, height}}
       >
-
-
         { 
           import.meta.env.MODE === "development" ? 
           <>
@@ -105,7 +125,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
                             base64Texture={layers[index].layerBase64}
                             opacity={opacityLayer}
                             position={[position2d.x , position2d.y, -sizeOfLayersZMiddle + (index  * zOffset)]}
-                            isSelected={index === fakeSelectedLayer}
+                            isSelected={layers[index].id === selectedLayer}
                          />
                 })
               }
@@ -116,49 +136,15 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
 
           <color attach="background" args={[colorToSigned24Bit(backgroundColor)]} />
 
-<<<<<<< HEAD
+
         <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xFFFFFF} />
         <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xFFFFFF} />
 
-        <PresentationControls
-          snap
-          global
-          zoom={0.5}
-          rotation={[0, 0, 0]}
-          polar={[-Math.PI/ 8, Math.PI / 4]}
-          azimuth={[-Math.PI, Math.PI]}
-        >
-          <group
-            position={[
-              0
-              ,0,
-              0]}
-          >
-            <Selection>
-              <EffectComposer multisampling={8} autoClear={false}>
-                <Outline blur visibleEdgeColor={0xffffff} hiddenEdgeColor={0x22090a} edgeStrength={100}/>
-              </EffectComposer>
-              {
-                positions2d.map((position2d, index) => {
-                  return <ThreeJsLayer
-                            key={index}
-                            base64Texture={layers[index].layerBase64}
-                            opacity={opacityLayer}
-                            position={[position2d.x , position2d.y, -sizeOfLayersZ + (index  * zOffset)]}
-                            isSelected={layers[index].id === selectedLayer}
-                         />
-                })
-              }
-            </Selection>
-          </group>
-        </PresentationControls>
-=======
           <Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
           <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />
           <Striplight position={[0, 10, 0]} scale={[10, 10, 10]} />
           <Striplight position={[0, 2, -10]} scale={[10, 3, 1]} />
         </Environment>
->>>>>>> main
         { /* <AsciiRenderer fgColor="white" bgColor="black" /> */}
       </Canvas>
       <ul className="text-xs">

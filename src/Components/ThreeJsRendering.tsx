@@ -1,11 +1,26 @@
 import React, { useRef , useMemo, useState, useEffect } from 'react';
 import { Selection, EffectComposer, Outline } from '@react-three/postprocessing'
 import { Canvas } from '@react-three/fiber';
-import { CameraControls, PresentationControls, Stats, AsciiRenderer, Grid } from '@react-three/drei';
+import {
+  CameraControls,
+  Stats,
+  AsciiRenderer,
+  ContactShadows,
+  Grid,
+  Stage,
+  Lightformer,
+  Environment,
+  Float,
+} from '@react-three/drei';
 import { useFullscreen } from "rooks";
 import ThreeJsLayer from "./ThreeJsLayer";
 import { position2D, LayersBase64Data } from "../interfaces";
+<<<<<<< HEAD
 import { useSelectedLayer } from "../Reducers/useSelectedLayersSettings";
+=======
+import Ground from "./Ground";
+import Striplight from "./Striplight";
+>>>>>>> main
 
 
 interface ThreejsRenderingProps {
@@ -21,8 +36,15 @@ interface ThreejsRenderingProps {
 
 function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d , zCamera, zOffset = 0.1, opacityLayer = 0.9 } : ThreejsRenderingProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cameraControlRef = useRef<CameraControls|null>(null);
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
   const { selectedLayer } = useSelectedLayer();
+
+  useEffect(() => {
+    if(cameraControlRef && cameraControlRef.current) {
+      cameraControlRef.current.dollyTo(+(1.1) + (layers.length * (zOffset / 2)) , true);
+    }
+  }, [layers.length, zOffset])
 
   function colorToSigned24Bit(stringColor: string) : number {
     return (parseInt(stringColor.substr(1), 16) << 8) / 256;
@@ -38,22 +60,19 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
     );
   }
 
-  const sizeOfLayersZ = layers.length * zOffset;
+  const sizeOfLayersZMiddle = layers.length * zOffset / 2;
 
-  if(layers.length != positions2d.length) {
-    // in case of reconcilation of the two arrays is not yet
-    return <span className="loading loading-bars loading-lg"></span>;
-  }
 
   return (
     <div className="flex flex-col gap-5 w-full">
       <Canvas
-        camera={{ position: [0, 0.0, 1], fov: 75, far: 10 }}
+        camera={{ position: [0, 0.0, 1.1], fov: 75, far: 10 }}
         dpr={window.devicePixelRatio}
         onDoubleClick={toggleFullscreen}
         ref={canvasRef}
         style={{width, height}}
       >
+
 
         { 
           import.meta.env.MODE === "development" ? 
@@ -62,11 +81,42 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
           <Grid sectionColor={0x987654} cellSize={1} args={[10, 10]} />
           </> : <></>
         }
-        <color attach="background" args={[colorToSigned24Bit(backgroundColor)]} />
+      <CameraControls
+          ref={cameraControlRef}
+          minPolarAngle={-Math.PI / 1.8}
+          maxPolarAngle={Math.PI / 2}
+          minAzimuthAngle={-Math.PI / 1.8}
+          maxAzimuthAngle={Math.PI / 1.8}
+          minDistance={0.8}
+          maxDistance={10}
+      />
+            <Ground />
+            <group
+              position={[
+                0
+                ,0.1,
+                0]}
+            >
+              {
+                layers.length === positions2d.length &&
+                positions2d.map((position2d, index) => {
+                  return <ThreeJsLayer
+                            key={index}
+                            base64Texture={layers[index].layerBase64}
+                            opacity={opacityLayer}
+                            position={[position2d.x , position2d.y, -sizeOfLayersZMiddle + (index  * zOffset)]}
+                            isSelected={index === fakeSelectedLayer}
+                         />
+                })
+              }
+            </group>
+          <pointLight position={[10, 10, 5]} />
+          <ambientLight intensity={0.4} />
+         <Environment background resolution={64}>
 
-        <pointLight position={[0, 0, 10]} intensity={1.5} color={0xAAAADD}/>
-        <pointLight position={[0, 0, -10]} intensity={0.5}  color={0xDDAAAA} />
+          <color attach="background" args={[colorToSigned24Bit(backgroundColor)]} />
 
+<<<<<<< HEAD
         <directionalLight position={[-10, .5, 5]} intensity={0.5} color={0xFFFFFF} />
         <directionalLight position={[10, 0.5, 5]} intensity={0.5} color={0xFFFFFF} />
 
@@ -102,6 +152,13 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
             </Selection>
           </group>
         </PresentationControls>
+=======
+          <Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
+          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />
+          <Striplight position={[0, 10, 0]} scale={[10, 10, 10]} />
+          <Striplight position={[0, 2, -10]} scale={[10, 3, 1]} />
+        </Environment>
+>>>>>>> main
         { /* <AsciiRenderer fgColor="white" bgColor="black" /> */}
       </Canvas>
       <ul className="text-xs">

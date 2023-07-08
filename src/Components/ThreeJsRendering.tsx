@@ -93,21 +93,28 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
        <pointLight position={[10, 10, 5]} />
       <pointLight position={[-10, -10, -5]} />
       <ambientLight intensity={0.4} />
-      <OrbitControls  minPolarAngle={Math.PI / 1.8} maxPolarAngle={Math.PI / 1.8} />
+      <OrbitControls
+          minPolarAngle={-Math.PI / 1.8}
+          maxPolarAngle={Math.PI / 2}
+          minAzimuthAngle={-Math.PI / 2}
+          maxAzimuthAngle={Math.PI / 2}
+          minDistance={0.8}
+          maxDistance={4}
+        />
               <Ground />
         {/*<PresentationControls
           snap
           global
           zoom={0.5}
           rotation={[0, 0, 0]}
-          polar={[-Math.PI/ 8, Math.PI / 4]}
+          polar={[-Math.PI/ 8, Math.PI / 1.8]}
           azimuth={[-Math.PI, Math.PI]}
         >*/}
 
             <group
               position={[
                 0
-                ,0,
+                ,0.1,
                 0]}
             >
               {

@@ -18,11 +18,8 @@ function Ground() {
             depthScale={1}
             minDepthThreshold={0.85}
             color="#151515"
-            metalness={0.6}
+            metalness={0.8}
             roughness={1}
-           // roughnessMap={floor}
-          //normalMap={normal}
-          //normalScale={[2, 2] as any}
           />
         </mesh>
   /*return (

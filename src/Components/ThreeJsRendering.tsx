@@ -37,7 +37,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   const { toggleFullscreen } = useFullscreen({ target: canvasRef });
   const { selectedLayer } = useSelectedLayer();
 
-  const sizeOfLayersZMiddle = layers.length * zOffset / 2;
+  const sizeOfLayersZMiddle = (layers.length * zOffset) / 2;
 
   useEffect(() => {
     if(cameraControlRef && cameraControlRef.current) {
@@ -46,31 +46,35 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   }, [layers.length, zOffset]);
 
   useEffect(() => {
-    if(cameraControlRef && cameraControlRef.current) {
+    console.log(selectedLayer)
+    if(cameraControlRef.current) {
       const layerIndex = layers.findIndex(layer => layer.id === selectedLayer);
       if(layerIndex !== -1) {
-        const offsetToSeeTheLayer = 0.5;
+        const positionZ = (-sizeOfLayersZMiddle + (layerIndex  * zOffset) -zOffset);
         cameraControlRef.current.setLookAt(
-          -1,0, sizeOfLayersZMiddle + (layerIndex  * zOffset) + offsetToSeeTheLayer,
-          -1, 0.0, offsetToSeeTheLayer,
-          true
-        );
-      } else {
-        recenterCamera(cameraControlRef.current);
+            0, 0, (-sizeOfLayersZMiddle + (layerIndex  * zOffset) -zOffset),
+            0, 0, (-sizeOfLayersZMiddle + (layerIndex  * zOffset)),
+            true
+          );
       }
     }
   }, [selectedLayer]);
+
 
   function colorToSigned24Bit(stringColor: string) : number {
     return (parseInt(stringColor.substr(1), 16) << 8) / 256;
   }
 
-  function recenterCamera(cameraControl : CameraControls) {
-    cameraControl.setLookAt(
-          0, 0, 1.1,
-          0,0, 0,
-          true
-        );
+  function recenterCamera() {
+    if(cameraControlRef.current) {
+      // position
+      // target
+      cameraControlRef.current.setLookAt(
+            0, 0, 1.1 + sizeOfLayersZMiddle,
+            0,0, 0,
+            true
+          );
+    }
   }
 
   // before layers are cut
@@ -87,6 +91,11 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
 
   return (
     <div className="flex flex-col gap-5 w-full">
+      <div className="self-start relative">
+      <button onClick={recenterCamera} className="btn btn-outline absolute z-10 top-6 left-1">
+        Reset Camera
+      </button>
+      </div>
       <Canvas
         camera={{ position: [0, 0.0, 1.1], fov: 75, far: 10 }}
         dpr={window.devicePixelRatio}
@@ -98,7 +107,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
           import.meta.env.MODE === "development" ? 
           <>
           <Stats showPanel={0} /> 
-          <Grid sectionColor={0x987654} cellSize={1} args={[10, 10]} />
+          <Grid sectionColor={0x987654} cellSize={1} args={[100, 100]} />
           </> : <></>
         }
       <CameraControls
@@ -107,7 +116,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
           maxPolarAngle={Math.PI / 2}
           minAzimuthAngle={-Math.PI / 1.8}
           maxAzimuthAngle={Math.PI / 1.8}
-          minDistance={0.8}
+          minDistance={0.09}
           maxDistance={10}
       />
             <Ground />

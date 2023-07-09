@@ -46,19 +46,31 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
   }, [layers.length, zOffset]);
 
   useEffect(() => {
-    console.log(selectedLayer)
     if(cameraControlRef.current) {
       const layerIndex = layers.findIndex(layer => layer.id === selectedLayer);
       if(layerIndex !== -1) {
-        const positionZ = (-sizeOfLayersZMiddle + (layerIndex  * zOffset) -zOffset);
+        const positionZ = (-sizeOfLayersZMiddle + (layerIndex  * zOffset));
+        // function to find based on empirical values below
+        //3.4 -> 0.1
+        //2.2 -> 0.2
+        //1.8 -> 0.3
+        //1.6 -> 0.4
+        // 1.45 -> 0.5
+        // 1.45 -> 0.6
+        // 1.3 -> 0.7
+        // 1.2 -> 0.8
+        const y = 1.01727621468532*Math.pow(zOffset, -0.429657244616162);
         cameraControlRef.current.setLookAt(
-            0, 0, (-sizeOfLayersZMiddle + (layerIndex  * zOffset) -zOffset),
-            0, 0, (-sizeOfLayersZMiddle + (layerIndex  * zOffset)),
+            0, 0, positionZ + y*zOffset,
+            0, 0, positionZ,
             true
           );
       }
+    } else {
+      recenterCamera();
     }
   }, [selectedLayer]);
+
 
 
   function colorToSigned24Bit(stringColor: string) : number {

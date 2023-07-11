@@ -9,13 +9,24 @@ const defaultLayers : LayerSettingsData[] = [
   { id: uniqueId("Layer "), min: 0, max:187, noise: 20, alpha: 150, color: "#168D16", position2D: { x:0, y: 0 }, needUpdate: true }
 ];
 
-type ActionName = 'add' | 'update' | 'delete' | 'clear-cache' | 'force-update';
+const ownSettings : LayerSettingsData[] = [
+  { id: "Background", min: 0, max: 255, noise: 0, alpha: 255, color:"#765ba7", position2D: { x:0, y: 0 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 0,  max: 66, noise: 10, alpha: 255, color:"#a17295", position2D: { x:0, y: 0 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 44, max:141, noise: 55, alpha: 255, color: "#08dd0c", position2D: { x:0.11, y: 0 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 53, max:130, noise: 36, alpha: 255, color: "#eb1e25", position2D: { x:0.314, y: 0.054 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 127, max:167, noise: 10, alpha: 255, color: "#1b97de", position2D: { x:0, y: 0.133 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 154, max:218, noise: 3, alpha: 255, color: "#ffe800", position2D: { x:0, y: -0.11 }, needUpdate: true },
+  { id: uniqueId("Layer "), min: 131, max:255, noise: 4, alpha: 255, color: "#ff6c2f", position2D: { x:0, y: 0 }, needUpdate: true }
+]
+
+type ActionName = 'add' | 'update' | 'delete' | 'clear-cache' | 'force-update' | 'own-settings' ;
 
 type Action =
  { type: 'add', newId: string } |
  { type: 'update', newLayerSettings: LayerSettingsData } |
  { type: 'delete', id: string } |
  { type: 'sort', newLayersSettings: LayerSettingsData[] } |
+ { type: 'own-settings' } |
  { type: 'clear-cache' } |
  { type: 'force-update'}
 ;
@@ -88,6 +99,9 @@ function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Ac
     }
     case 'force-update': {
       return layersSettings.map(layerSettings => ({...layerSettings, needUpdate: true }));
+    }
+    case 'own-settings': {
+      return ownSettings;
     }
   }
 }

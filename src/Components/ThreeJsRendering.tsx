@@ -115,13 +115,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
         ref={canvasRef}
         style={{width, height}}
       >
-        { 
-          import.meta.env.MODE === "development" ? 
-          <>
-          <Stats showPanel={0} /> 
-          <Grid sectionColor={0x987654} cellSize={1} args={[100, 100]} />
-          </> : <></>
-        }
+
       <CameraControls
           ref={cameraControlRef}
           minPolarAngle={-Math.PI / 1.8}

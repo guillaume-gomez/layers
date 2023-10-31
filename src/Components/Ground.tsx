@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import React, { useRef, useEffect } from 'react';
 import { ThreeElements, useLoader } from '@react-three/fiber';
-import { Reflector, Text, useTexture, useGLTF, MeshReflectorMaterial } from '@react-three/drei'
+import { MeshReflectorMaterial } from '@react-three/drei'
 
 
 

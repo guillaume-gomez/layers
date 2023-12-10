@@ -17,6 +17,39 @@ Experiment about layering images based on pixels range.
   </tr>
 </table>
 
+### Vasarely
+
+<table>
+  <tr>
+    <td>
+      <img src="./Examples/vasarely1.png" alt="vaseraly" />      
+    </td>
+    <td>      
+      <img src="./Examples/vasarely1-2.png"  alt="vasarely1-2"/>
+    </td>
+    <td>      
+      <img src="./Examples/vasarely1-3.png"  alt="vasarely1-3"/>
+    </td>
+  </tr>
+</table>
+
+<img src="./Examples/vasarely2.png" alt="vaseraly2" />      
+<img src="./Examples/vasarely2-2.png"  alt="vasarely2-2"/>
+<img src="./Examples/vasarely2-3.png"  alt="vasarely2-3"/>
+
+
+### Another example
+
+<table>
+  <tr>
+    <td>
+      <img src="./Examples/pourcentageDePoint.png" alt="anotherExample" />      
+    </td>
+    <td>      
+      <img src="./Examples/pourcentageDePoint2.png"  alt="anotherExample2"/>
+    </td>
+  </tr>
+</table>
 
 
 ## Sources

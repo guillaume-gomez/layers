@@ -80,15 +80,16 @@ function layersSettingsReducer(layersSettings : LayerSettingsData[], action : Ac
     }
     case 'update': {
       const { newLayerSettings } = action;
-      return layersSettings.map(layerSettings => {
+      const updateLayerSettings = layersSettings.map(layerSettings => {
         if(layerSettings.id === newLayerSettings.id) {
           return { ...newLayerSettings, needUpdate: true };
         }
         return layerSettings;
       });
+      return updateLayerSettings;
     }
     case 'sort': {
-      return action.newLayersSettings;
+      return action.newLayersSettings.map(layerSettings => ({...layerSettings, needUpdate: true }));
     }
     case 'delete': {
       const remaininglayersSettings = layersSettings.filter((layerSettings) => action.id !== layerSettings.id);

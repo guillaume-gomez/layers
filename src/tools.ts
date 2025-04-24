@@ -36,7 +36,7 @@ export function generateImageFromRange(greyScaleCanvas: HTMLCanvasElement, {min,
   canvas.width = greyScaleCanvas.width;
   canvas.height = greyScaleCanvas.height;
 
-  const greyScaleContext = greyScaleCanvas.getContext("2d");
+  const greyScaleContext = greyScaleCanvas.getContext("2d", { willReadFrequently: true });
   const outputContext = canvas.getContext("2d");
 
   if(greyScaleContext && outputContext) {

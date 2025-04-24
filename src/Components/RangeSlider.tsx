@@ -26,7 +26,7 @@ function RangeSlider({ min, max, step = 100 }: RangeSliderProps) {
         setMaxThumb(newMaxThumb);
     }, [maxPrice]);
 
-    console.log(minThumb, "--> ", maxThumb)
+    //console.log(minThumb, "--> ", maxThumb)
 
     return (
     <div>

@@ -10,19 +10,28 @@ function LayerSettingsInfo() {
   }
 
   return(
-    <div className="dropdown dropdown-hover">
-      <label tabIndex={0} className="btn btn-sm btn-info btn-outline text-xs">Help ?</label>
-      <div tabIndex={0} className="dropdown-content card card-compact w-96 p-2 shadow bg-neutral text-primary-content">
-        <div className="card-body">
-          <h3 className="card-title">See here what you could do here</h3>
-          <video controls width="600">
-              <source src={videoSample} type="video/webm" />
-          </video>
-          OR
-          <a className="link link-accent text-lg" onClick={setDefaultSettings}>Click here to run default settings</a>
-        </div>
-      </div>
-    </div>
+    <>
+      <label htmlFor="modal-help" className="btn btn-sm btn-info btn-outline text-xs">Help ?</label>
+      <input type="checkbox" id="modal-help" className="modal-toggle" />
+      <label htmlFor="modal-help" className="modal cursor-pointer">
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">See here what you could do here</h3>
+          <div className="flex flex-col gap-2">
+            <video controls width="600">
+                  <source src={videoSample} type="video/webm" />
+              </video>
+              OR
+              <label
+                className="link link-accent text-lg"
+                onClick={setDefaultSettings}
+                htmlFor="modal-help"
+              >
+                Click here to run default settings
+              </label>
+          </div>
+        </label>
+      </label>
+    </>
   );
 }
 

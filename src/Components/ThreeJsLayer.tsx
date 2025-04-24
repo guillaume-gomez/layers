@@ -1,14 +1,11 @@
 import * as THREE from 'three'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { useSpring, animated, Globals } from '@react-spring/three';
+import { useSpring, animated } from '@react-spring/three';
 import React, { useRef, useEffect, useState } from 'react';
 import { ThreeElements, useLoader } from '@react-three/fiber';
 import {  Select } from '@react-three/postprocessing'
 
 
-Globals.assign({
-  frameLoop: "always",
-});
 
 interface ThreeJsStripeProps {
   base64Texture: string;

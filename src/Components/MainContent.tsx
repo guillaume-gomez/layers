@@ -122,7 +122,7 @@ function MainContent() {
                 value={quality}
                 onChange={(e) => setQuality(e.target.value as QualityType)}
               >
-                <option disabled selected>Quality of result</option>
+                <option disabled>Quality of result</option>
                 <option value="min">Min</option>
                 <option value="middle">Middle</option>
                 <option value="max">Max</option>

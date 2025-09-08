@@ -22,7 +22,7 @@ function Canvas2DManager({ layers, width, height }: Canvas2DManagerProps) {
       const dataURL = await mergeImages(layersBase64, width, height, backgroundColorImage);
       const dateString = formatFns(new Date(), "dd-MM-yyyy-hh-mm");
       anchorRef.current.href = dataURL.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-      (anchorRef.current as any).download = `${dateString}-risography.png`;
+      (anchorRef.current as any).download = `${dateString}-layers.png`;
       anchorRef.current.click();
     }
   }

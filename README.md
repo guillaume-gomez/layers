@@ -58,5 +58,7 @@ https://github.com/guillaume-gomez/layers/assets/5362875/7ef881fe-029f-4359-b028
 
 ## Sources
 Frida.jpg -> Saundra B. and William H. Lane Galleries
+
 Vasarely -> vasarely-victor-album-gordes-ond-dva
+
 Vasarely2 -> victor vasarely képei

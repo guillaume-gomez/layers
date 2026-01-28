@@ -114,6 +114,7 @@ function ThreejsRendering({ layers, width, height, backgroundColor,  positions2d
         onDoubleClick={toggleFullscreen}
         ref={canvasRef}
         style={{width, height}}
+        className="hover:cursor-grab"
       >
 
       <CameraControls
